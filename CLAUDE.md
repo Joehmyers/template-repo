@@ -22,6 +22,9 @@ Keep this file under ~200 lines. Include only what Claude cannot infer from read
 
 # Run locally
 <fill-in>
+
+# Fetch project data from Cloudflare R2 into ./data (config via .env — see .env.example)
+ops/fetch-data.sh [prefix]
 ```
 
 ---

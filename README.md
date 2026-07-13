@@ -42,7 +42,9 @@ my-project/
 1. **Clone** this template and rename the project.
 2. **Edit `CLAUDE.md`** — fill in the `<fill-in>` sections for your build, test, and lint commands.
 3. **Add your source code** to `src/` and tests to `tests/`.
-4. **Start Claude Code** with `claude` from the project root.
+4. **Fetch project data (optional)** — copy `.env.example` to `.env`, fill in your Cloudflare R2
+   credentials, and run `ops/fetch-data.sh` to sync the bucket into `./data/` (gitignored).
+5. **Start Claude Code** with `claude` from the project root.
 
 ---
 

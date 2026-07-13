@@ -46,3 +46,6 @@ htmlcov/
 # Temporary files
 tmp/
 *.tmp
+
+# Local data fetched from Cloudflare R2 (ops/fetch-data.sh)
+data/
