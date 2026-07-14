@@ -5,7 +5,18 @@
   },
   "hooks": {
     "PreToolUse": [],
-    "PostToolUse": []
+    "PostToolUse": [],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/ops/push-assets.sh --auto",
+            "timeout": 120
+          }
+        ]
+      }
+    ]
   },
   "plansDirectory": "./docs/plans"
 }

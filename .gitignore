@@ -49,3 +49,6 @@ tmp/
 
 # Local data fetched from Cloudflare R2 (ops/fetch-data.sh)
 data/
+
+# Created assets, pushed to Cloudflare R2 (ops/push-assets.sh)
+assets/

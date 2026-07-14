@@ -25,6 +25,9 @@ Keep this file under ~200 lines. Include only what Claude cannot infer from read
 
 # Fetch project data from Cloudflare R2 into ./data (config via .env — see .env.example)
 ops/fetch-data.sh [prefix]
+
+# Push created assets from ./assets to Cloudflare R2 (runs automatically via Stop hook)
+ops/push-assets.sh [prefix]
 ```
 
 ---
@@ -88,6 +91,12 @@ ops/fetch-data.sh [prefix]
 - Port 5432 must be free; run `docker compose up db` before integration tests
 - The build assumes Node ≥ 20; check `.nvmrc`
 -->
+
+- Put created assets (generated files meant to outlive this machine) in `./assets/` (gitignored).
+  A `Stop` hook in `.claude/settings.json` uploads them to Cloudflare R2 after each agent turn,
+  so they are accessible from anywhere; retrieve them with `ops/fetch-data.sh assets`.
+  Without R2 credentials in `.env` the hook is a silent no-op — nothing to configure on a fresh clone.
+  Symlinks and secret-looking files (`.env*`, `*.pem`, `*.key`) are never uploaded.
 
 ---
 
