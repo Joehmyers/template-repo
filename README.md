@@ -46,6 +46,9 @@ my-project/
 3. **Add your source code** to `src/` and tests to `tests/`.
 4. **Fetch project data (optional)** — copy `.env.example` to `.env`, fill in your Cloudflare R2
    credentials, and run `ops/fetch-data.sh` to sync the bucket into `./data/` (gitignored).
+   With the same credentials, anything created in `./assets/` (gitignored) is pushed back to the
+   bucket automatically at the end of each Claude Code turn — so created assets are accessible
+   from anywhere (manual push: `ops/push-assets.sh`).
 5. **Start Claude Code** with `claude` from the project root.
 
 ---
