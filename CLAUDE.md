@@ -35,6 +35,7 @@ ops/fetch-data.sh [prefix]
 - `tests/` — test suite (the agent's verification target)
 - `docs/specs/` — feature specs (what/why)
 - `docs/plans/` — implementation plans (how/steps)
+- `docs/diagrams/` — architecture diagrams (`system-diagram.md`: Mermaid graph + timeline views)
 - `ops/`   — infrastructure and deployment scripts
 - `.claude/` — Claude Code configuration (committed to git)
 
