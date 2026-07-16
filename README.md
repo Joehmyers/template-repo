@@ -28,8 +28,10 @@ my-project/
 ├── docs/
 │   ├── specs/                # Feature specs — the "what/why"
 │   │   └── SPEC_TEMPLATE.md  # Copy this when writing a new spec
-│   └── plans/                # Implementation plans — the "how"
-│       └── PLAN_TEMPLATE.md  # Copy this when writing a new plan
+│   ├── plans/                # Implementation plans — the "how"
+│   │   └── PLAN_TEMPLATE.md  # Copy this when writing a new plan
+│   └── diagrams/             # Architecture diagrams (Mermaid, rendered by GitHub)
+│       └── system-diagram.md # System diagram — graph + timeline views (placeholder)
 ├── src/                      # Product source code
 ├── tests/                    # Test suite
 └── ops/                      # Infrastructure and deployment scripts
