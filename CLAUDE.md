@@ -23,6 +23,9 @@ Keep this file under ~200 lines. Include only what Claude cannot infer from read
 # Run locally
 <fill-in>
 
+# Create the project's Cloudflare R2 bucket (wrangler; bucket = repo name)
+ops/create-bucket.sh [bucket-name]
+
 # Fetch project data from Cloudflare R2 into ./data (config via .env — see .env.example)
 ops/fetch-data.sh [prefix]
 
@@ -76,6 +79,12 @@ ops/push-assets.sh [prefix]
 ---
 
 ## Architecture decisions
+
+- **Cloud storage: Cloudflare R2.** The bucket is named after the repository
+  (override with `R2_BUCKET`). Bucket lifecycle is managed with **wrangler**
+  (`ops/create-bucket.sh` → `wrangler r2 bucket create <repo-name>`); the R2
+  binding lives in `wrangler.jsonc`. Bulk data transfer uses the S3-compatible
+  API (`ops/fetch-data.sh`) because wrangler has no recursive sync.
 
 <!-- Document non-obvious decisions, e.g.:
 - We use X over Y because Z

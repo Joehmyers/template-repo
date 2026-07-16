@@ -32,9 +32,12 @@ my-project/
 │   │   └── PLAN_TEMPLATE.md  # Copy this when writing a new plan
 │   └── diagrams/             # Architecture diagrams (Mermaid, rendered by GitHub)
 │       └── system-diagram.md # System diagram — graph + timeline views (placeholder)
+├── wrangler.jsonc            # Cloudflare wrangler config — R2 bucket binding (bucket = repo name)
 ├── src/                      # Product source code
 ├── tests/                    # Test suite
 └── ops/                      # Infrastructure and deployment scripts
+    ├── create-bucket.sh      # Create the project's R2 bucket via wrangler
+    └── fetch-data.sh         # Sync R2 bucket data into ./data (S3-compatible)
 ```
 
 ---
@@ -44,11 +47,16 @@ my-project/
 1. **Clone** this template and rename the project.
 2. **Edit `CLAUDE.md`** — fill in the `<fill-in>` sections for your build, test, and lint commands.
 3. **Add your source code** to `src/` and tests to `tests/`.
-4. **Fetch project data (optional)** — copy `.env.example` to `.env`, fill in your Cloudflare R2
-   credentials, and run `ops/fetch-data.sh` to sync the bucket into `./data/` (gitignored).
-   With the same credentials, anything created in `./assets/` (gitignored) is pushed back to the
-   bucket automatically at the end of each Claude Code turn — so created assets are accessible
-   from anywhere (manual push: `ops/push-assets.sh`).
+4. **Cloud storage (optional)** — storage is assumed to be [Cloudflare R2](https://developers.cloudflare.com/r2/),
+   and the bucket is named after the repository.
+   - **Create the bucket** with [wrangler](https://developers.cloudflare.com/workers/wrangler/):
+     run `wrangler login`, then `ops/create-bucket.sh` (creates a bucket named after the repo).
+     The R2 binding is pre-wired in `wrangler.jsonc`.
+   - **Fetch data** — copy `.env.example` to `.env`, fill in your Cloudflare R2
+     credentials, and run `ops/fetch-data.sh` to sync the bucket into `./data/` (gitignored).
+   - Anything created in `./assets/` (gitignored) is pushed back to the bucket automatically
+     at the end of each Claude Code turn — so created assets are accessible from anywhere
+     (manual push: `ops/push-assets.sh`).
 5. **Start Claude Code** with `claude` from the project root.
 
 ---
