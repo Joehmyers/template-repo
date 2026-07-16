@@ -11,25 +11,30 @@
 #   R2_ACCOUNT_ID          Cloudflare account ID (the hex ID in your R2 endpoint URL)
 #   R2_ACCESS_KEY_ID       R2 API token access key ID
 #   R2_SECRET_ACCESS_KEY   R2 API token secret
-#   R2_BUCKET              Bucket name
+#   R2_BUCKET              Bucket name (default: the repository name)
 #   R2_PREFIX              Optional path within the bucket (default: entire bucket)
 #   DATA_DIR               Local destination directory (default: ./data)
+#
+# Cloud storage is assumed to be Cloudflare R2. Use wrangler for bucket
+# lifecycle (see ops/create-bucket.sh); this script uses the S3-compatible API
+# for bulk transfer because wrangler does not support recursive sync.
 #
 # Requires the AWS CLI (R2 is S3-compatible): https://developers.cloudflare.com/r2/api/s3/
 set -euo pipefail
 
-repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# shellcheck source=ops/lib.sh
+source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
+
+repo_root="$(ops_repo_root)"
 
 # Load .env if present (values already in the environment take precedence).
-if [[ -f "$repo_root/.env" ]]; then
-  set -a
-  # shellcheck disable=SC1091
-  source "$repo_root/.env"
-  set +a
-fi
+load_dotenv
+
+# R2_BUCKET defaults to the repository name.
+R2_BUCKET="$(r2_bucket_name)"
 
 missing=()
-for var in R2_ACCOUNT_ID R2_ACCESS_KEY_ID R2_SECRET_ACCESS_KEY R2_BUCKET; do
+for var in R2_ACCOUNT_ID R2_ACCESS_KEY_ID R2_SECRET_ACCESS_KEY; do
   [[ -n "${!var:-}" ]] || missing+=("$var")
 done
 if (( ${#missing[@]} )); then
