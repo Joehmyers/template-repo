@@ -1,5 +1,5 @@
 ---
-# Path-scoped rule: applies whenever Claude touches files matching the paths below.
+# Path-scoped rule: applies whenever an agent touches files matching the paths below.
 # Remove or update the `paths` frontmatter to change the scope.
 paths:
   - "tests/**"
