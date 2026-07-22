@@ -17,14 +17,19 @@ ops_repo_root() {
 # Load a .env file at the repo root if present. Values already exported in the
 # environment take precedence over the file.
 load_dotenv() {
-  local root
+  local root saved line
   root="$(ops_repo_root)"
-  if [[ -f "$root/.env" ]]; then
-    set -a
-    # shellcheck disable=SC1091
-    source "$root/.env"
-    set +a
-  fi
+  [[ -f "$root/.env" ]] || return 0
+  saved="$(export -p)"
+  set -a
+  # shellcheck disable=SC1091
+  source "$root/.env"
+  set +a
+  # Re-assert the snapshot so pre-existing environment values win over .env.
+  # (export -p emits `declare -x`, which would create function locals here.)
+  while IFS= read -r line; do
+    eval "${line/#declare -x /export }" 2>/dev/null || true
+  done <<< "$saved"
 }
 
 # Derive the repository name (used as the default R2 bucket name).
