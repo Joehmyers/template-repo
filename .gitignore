@@ -1,4 +1,5 @@
-# Personal Claude overrides — never commit
+# Personal agent overrides — never commit
+AGENTS.local.md
 CLAUDE.local.md
 .claude/settings.local.json
 

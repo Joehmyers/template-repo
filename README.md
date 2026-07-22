@@ -1,7 +1,9 @@
 # template-repo
 
-A template repository structured for agent-driven development with Claude Code.
-Clone, fill in the `<fill-in>` placeholders in `CLAUDE.md`, and start building.
+A template repository structured for agent-driven development. Instructions live
+in a tool-agnostic `AGENTS.md`, so it works with Claude Code, Cursor, Copilot,
+Codex, Aider, and other [AGENTS.md](https://agents.md)-aware tools — not just one.
+Clone, fill in the `<fill-in>` placeholders in `AGENTS.md`, and start building.
 
 ---
 
@@ -9,8 +11,9 @@ Clone, fill in the `<fill-in>` placeholders in `CLAUDE.md`, and start building.
 
 ```
 my-project/
-├── CLAUDE.md                 # Agent context — auto-loaded every session (committed)
-├── CLAUDE.local.md           # Personal overrides — gitignored, never commit
+├── AGENTS.md                 # Agent context (tool-agnostic) — auto-loaded every session (committed)
+├── CLAUDE.md                 # Thin pointer that imports AGENTS.md for Claude Code (committed)
+├── AGENTS.local.md           # Personal overrides — gitignored, never commit
 ├── README.md                 # This file — human-oriented overview
 ├── .gitignore
 ├── .claude/
@@ -24,12 +27,17 @@ my-project/
 │   │   └── code-reviewer.md  # Example: adversarial diff reviewer
 │   └── commands/             # Custom slash commands
 │       ├── spec.md           # /spec — start a new feature spec
-│       └── plan.md           # /plan — write an implementation plan
+│       ├── plan.md           # /plan — write an implementation plan
+│       └── adr.md            # /adr — record an architecture decision
 ├── docs/
 │   ├── specs/                # Feature specs — the "what/why"
 │   │   └── SPEC_TEMPLATE.md  # Copy this when writing a new spec
 │   ├── plans/                # Implementation plans — the "how"
 │   │   └── PLAN_TEMPLATE.md  # Copy this when writing a new plan
+│   ├── decisions/            # Decision log — Architecture Decision Records (the durable "why")
+│   │   ├── README.md         # Index table + how to write an ADR
+│   │   ├── adr-template.md   # Copy this when recording a new decision
+│   │   └── 0001-record-architecture-decisions.md  # Bootstrap ADR
 │   └── diagrams/             # Architecture diagrams (Mermaid, rendered by GitHub)
 │       └── system-diagram.md # System diagram — graph + timeline views (placeholder)
 ├── wrangler.jsonc            # Cloudflare wrangler config — R2 bucket binding (bucket = repo name)
@@ -45,7 +53,8 @@ my-project/
 ## Getting started
 
 1. **Clone** this template and rename the project.
-2. **Edit `CLAUDE.md`** — fill in the `<fill-in>` sections for your build, test, and lint commands.
+2. **Edit `AGENTS.md`** — fill in the `<fill-in>` sections for your build, test, and lint commands.
+   (`CLAUDE.md` just imports it, so there is nothing to edit there.)
 3. **Add your source code** to `src/` and tests to `tests/`.
 4. **Cloud storage (optional)** — storage is assumed to be [Cloudflare R2](https://developers.cloudflare.com/r2/),
    and the bucket is named after the repository.
@@ -57,7 +66,7 @@ my-project/
    - Anything created in `./assets/` (gitignored) is pushed back to the bucket automatically
      at the end of each Claude Code turn — so created assets are accessible from anywhere
      (manual push: `ops/push-assets.sh`).
-5. **Start Claude Code** with `claude` from the project root.
+5. **Start your agent** (e.g. `claude` from the project root) — it loads `AGENTS.md` automatically.
 
 ---
 
@@ -74,20 +83,28 @@ For larger features, start with `/spec <feature>` to write a spec first.
 
 > **One-sentence diff?** Skip the plan. **Touching > 4 files or unclear scope?** Write a spec.
 
+When a change makes a significant, hard-to-reverse choice, record it in the
+**decision log** with `/adr <title>` — see [`docs/decisions/`](docs/decisions/).
+These Architecture Decision Records give both humans and agents the durable *why*
+behind the code, so past decisions aren't silently contradicted.
+
 ---
 
 ## Key files to edit first
 
 | File | Purpose |
 |------|---------|
-| `CLAUDE.md` | Fill in build/test/lint commands, code style, gotchas |
+| `AGENTS.md` | Fill in build/test/lint commands, code style, gotchas (the canonical instructions) |
 | `.claude/settings.json` | Configure permissions and hooks for your toolchain |
 | `docs/specs/SPEC_TEMPLATE.md` | Copy and fill for each new feature spec |
 | `docs/plans/PLAN_TEMPLATE.md` | Copy and fill for each implementation plan |
+| `docs/decisions/adr-template.md` | Copy and fill to record each significant decision |
 
 ---
 
 ## Resources
 
+- [AGENTS.md](https://agents.md) — the open, tool-agnostic instruction-file standard
+- [Architecture Decision Records](https://adr.github.io/) — ADR/MADR formats and tooling
 - [Claude Code documentation](https://docs.anthropic.com/en/docs/claude-code)
 - [Claude Code best practices](https://www.anthropic.com/engineering/claude-code-best-practices)
