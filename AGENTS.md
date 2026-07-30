@@ -57,6 +57,16 @@ ops/push-assets.sh [prefix]
 
 ---
 
+## Writing style
+
+All prose in this repo — docs, specs, plans, ADRs, commit messages, PR
+descriptions, comments, error messages — follows `docs/style-guide.md`:
+plain English, Orwell's rules, active voice, and every term of art defined on
+first use. Apply Orwell's razor: if a simpler phrasing carries the same
+meaning, the simpler phrasing is correct.
+
+---
+
 ## Testing
 
 ---

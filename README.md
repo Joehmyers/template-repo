@@ -38,8 +38,9 @@ my-project/
 │   │   ├── README.md         # Index table + how to write an ADR
 │   │   ├── adr-template.md   # Copy this when recording a new decision
 │   │   └── 0001-record-architecture-decisions.md  # Bootstrap ADR
-│   └── diagrams/             # Architecture diagrams (Mermaid, rendered by GitHub)
-│       └── system-diagram.md # System diagram — graph + timeline views (placeholder)
+│   ├── diagrams/             # Architecture diagrams (Mermaid, rendered by GitHub)
+│   │   └── system-diagram.md # System diagram — graph + timeline views (placeholder)
+│   └── style-guide.md        # Writing style — plain English, Orwell's rules, defined terms
 ├── wrangler.jsonc            # Cloudflare wrangler config — R2 bucket binding (bucket = repo name)
 ├── src/                      # Product source code
 ├── tests/                    # Test suite
