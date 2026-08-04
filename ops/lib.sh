@@ -5,9 +5,9 @@
 # Source this from another script:
 #   source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 #
-# Cloud storage for this project is assumed to be Cloudflare R2, and the
-# bucket is named after the repository. These helpers resolve that name so
-# the individual scripts don't have to repeat the logic.
+# Holds the helpers more than one ops/ script needs: locating the repository
+# root, loading .env, and resolving the Cloudflare R2 bucket name (which
+# defaults to the repository name — see docs/decisions/0002-*.md).
 
 # Absolute path to the repository root (the parent of ops/).
 ops_repo_root() {

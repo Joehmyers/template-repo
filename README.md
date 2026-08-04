@@ -16,24 +16,27 @@ my-project/
 ├── AGENTS.local.md           # Personal overrides — gitignored, never commit
 ├── README.md                 # This file — human-oriented overview
 ├── .gitignore
+├── .editorconfig             # Indentation and line endings, for every editor
 ├── .claude/
 │   ├── settings.json         # Team permissions and hooks (committed)
 │   ├── settings.local.json   # Personal overrides (gitignored)
-│   ├── rules/                # Path-scoped modular instructions
+│   ├── rules/                # Path-scoped instructions, loaded on matching files
 │   │   └── testing.md        # Example: test-file rules
-│   ├── skills/               # On-demand domain knowledge (loaded when relevant)
-│   │   └── spec-writer/      # Example: spec-writing workflow
-│   ├── agents/               # Specialized subagent definitions
-│   │   └── code-reviewer.md  # Example: adversarial diff reviewer
-│   └── commands/             # Custom slash commands
-│       ├── spec.md           # /spec — start a new feature spec
-│       ├── plan.md           # /plan — write an implementation plan
-│       └── adr.md            # /adr — record an architecture decision
+│   ├── skills/               # Workflows — auto-loaded when relevant, or run as /name
+│   │   ├── spec/             # /spec — write a feature spec
+│   │   ├── plan/             # /plan — write an implementation plan
+│   │   └── adr/              # /adr — record an architecture decision
+│   └── agents/               # Specialized subagent definitions
+│       └── code-reviewer.md  # Example: adversarial, read-only diff reviewer
+├── .github/
+│   ├── workflows/ci.yml      # CI — runs ops/check.sh on every pull request
+│   └── pull_request_template.md
 ├── docs/
 │   ├── specs/                # Feature specs — the "what/why"
 │   │   └── SPEC_TEMPLATE.md  # Copy this when writing a new spec
 │   ├── plans/                # Implementation plans — the "how"
-│   │   └── PLAN_TEMPLATE.md  # Copy this when writing a new plan
+│   │   ├── PLAN_TEMPLATE.md  # Copy this when writing a new plan
+│   │   └── examples/         # A filled-in plan, for reference
 │   ├── decisions/            # Decision log — Architecture Decision Records (the durable "why")
 │   │   ├── README.md         # Index table + how to write an ADR
 │   │   ├── adr-template.md   # Copy this when recording a new decision
@@ -44,9 +47,13 @@ my-project/
 ├── wrangler.jsonc            # Cloudflare wrangler config — R2 bucket binding (bucket = repo name)
 ├── src/                      # Product source code
 ├── tests/                    # Test suite
-└── ops/                      # Infrastructure and deployment scripts
+└── ops/                      # Verification, infrastructure, deployment
+    ├── check.sh              # THE verification command — lint, tests, build
+    ├── setup.sh              # Install dependencies (runs on session start)
+    ├── lib.sh                # Shared helpers for the scripts below
     ├── create-bucket.sh      # Create the project's R2 bucket via wrangler
-    └── fetch-data.sh         # Sync R2 bucket data into ./data (S3-compatible)
+    ├── fetch-data.sh         # Sync R2 bucket data into ./data (S3-compatible)
+    └── push-assets.sh        # Push ./assets up to R2 (runs after each turn)
 ```
 
 ---
@@ -54,11 +61,17 @@ my-project/
 ## Getting started
 
 1. **Clone** this template and rename the project.
-2. **Edit `AGENTS.md`** — fill in the `<fill-in>` sections for your build, test, and lint commands.
-   (`CLAUDE.md` just imports it, so there is nothing to edit there.)
-3. **Add your source code** to `src/` and tests to `tests/`.
-4. **Cloud storage (optional)** — storage is assumed to be [Cloudflare R2](https://developers.cloudflare.com/r2/),
-   and the bucket is named after the repository.
+2. **Fill in the two ops scripts** — the configuration block at the top of
+   `ops/check.sh` (lint, test, build) and `ops/setup.sh` (install). Everything
+   else reads from these: agents, humans, and CI all run `ops/check.sh`, so
+   there is one answer to "is this repo green?" instead of three.
+3. **Edit `AGENTS.md`** — fill in the remaining `<fill-in>` sections (how to run
+   the project locally, code style). `CLAUDE.md` just imports it, so there is
+   nothing to edit there.
+4. **Add your source code** to `src/` and tests to `tests/`.
+5. **Cloud storage (optional)** — storage is assumed to be [Cloudflare R2](https://developers.cloudflare.com/r2/),
+   and the bucket is named after the repository
+   ([ADR-0002](docs/decisions/0002-use-cloudflare-r2-for-project-storage.md)).
    - **Create the bucket** with [wrangler](https://developers.cloudflare.com/workers/wrangler/):
      run `wrangler login`, then `ops/create-bucket.sh` (creates a bucket named after the repo).
      The R2 binding is pre-wired in `wrangler.jsonc`.
@@ -67,7 +80,30 @@ my-project/
    - Anything created in `./assets/` (gitignored) is pushed back to the bucket automatically
      at the end of each Claude Code turn — so created assets are accessible from anywhere
      (manual push: `ops/push-assets.sh`).
-5. **Start your agent** (e.g. `claude` from the project root) — it loads `AGENTS.md` automatically.
+6. **Start your agent** (e.g. `claude` from the project root) — it loads `AGENTS.md` automatically.
+
+---
+
+## One verification command
+
+```bash
+ops/check.sh          # lint, tests, build — skips whatever you haven't configured
+ops/check.sh --strict # also fails on steps that are still unconfigured
+```
+
+An agent is only as reliable as the check it can run to prove its work. This repo
+gives it exactly one: `ops/check.sh`. `AGENTS.md` tells agents to run it before
+pushing, `.github/workflows/ci.yml` runs the same script on every pull request,
+and you run it by hand. Nothing can pass locally and fail in CI because of a
+command someone forgot to keep in sync.
+
+It works before you configure anything: the shell scripts in `ops/` are syntax-
+checked and, if [shellcheck](https://www.shellcheck.net/) is installed, linted.
+Unconfigured steps report `SKIP` rather than pretending to pass.
+
+`ops/setup.sh` is the matching install step. A `SessionStart` hook runs it
+automatically, so a cloud or web agent session starts with dependencies present
+instead of guessing whether its change works.
 
 ---
 
@@ -77,8 +113,9 @@ my-project/
 |------|-----------|
 | **Explore** | Enter plan mode (`Shift+Tab`); ask Claude to read relevant files |
 | **Plan** | Use `/plan <feature>` to write an implementation plan to `docs/plans/` |
-| **Implement** | Exit plan mode; Claude codes against the plan and runs tests |
-| **Commit** | Claude commits with a descriptive message |
+| **Implement** | Exit plan mode; Claude codes against the plan |
+| **Verify** | `ops/check.sh` must pass before the change is done |
+| **Commit** | Claude commits with a descriptive message and opens a PR |
 
 For larger features, start with `/spec <feature>` to write a spec first.
 
@@ -95,11 +132,31 @@ behind the code, so past decisions aren't silently contradicted.
 
 | File | Purpose |
 |------|---------|
-| `AGENTS.md` | Fill in build/test/lint commands, code style, gotchas (the canonical instructions) |
-| `.claude/settings.json` | Configure permissions and hooks for your toolchain |
+| `ops/check.sh` | Fill in your lint, test, and build commands — the one verification entrypoint |
+| `ops/setup.sh` | Fill in your dependency install command |
+| `AGENTS.md` | Fill in code style, how to run locally, gotchas (the canonical instructions) |
+| `.claude/settings.json` | Permissions and hooks; the `deny` list already blocks reading secrets |
+| `.github/workflows/ci.yml` | Add your language toolchain step before `ops/setup.sh` |
 | `docs/specs/SPEC_TEMPLATE.md` | Copy and fill for each new feature spec |
 | `docs/plans/PLAN_TEMPLATE.md` | Copy and fill for each implementation plan |
 | `docs/decisions/adr-template.md` | Copy and fill to record each significant decision |
+
+---
+
+## Extending the agent
+
+Everything under `.claude/` is committed, so your whole team gets the same setup.
+
+| Add | Where | What it does |
+|-----|-------|--------------|
+| **Skill** | `.claude/skills/<name>/SKILL.md` | A workflow Claude loads when its `description` matches the task, or you run `/<name>`. This is where `/spec`, `/plan`, and `/adr` live. |
+| **Subagent** | `.claude/agents/<name>.md` | A specialist with its own context window and tool list, for work that would otherwise flood the main conversation. |
+| **Rule** | `.claude/rules/<topic>.md` | Instructions that load only when Claude touches files matching the `paths` frontmatter — keeps `AGENTS.md` short. |
+| **Hook** | `.claude/settings.json` | A shell command at a lifecycle event. Unlike an instruction, a hook runs whether or not the agent decides to. |
+
+Custom slash commands and skills are the same thing now, so this template uses
+`.claude/skills/` throughout. A legacy `.claude/commands/*.md` file still works if
+you have one.
 
 ---
 

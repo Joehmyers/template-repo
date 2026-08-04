@@ -39,6 +39,7 @@ One explains the past; the other governs the future.
 | ADR | Title | Status | Date |
 |-----|-------|--------|------|
 | [0001](0001-record-architecture-decisions.md) | Record architecture decisions | Accepted | 2026-07-21 |
+| [0002](0002-use-cloudflare-r2-for-project-storage.md) | Use Cloudflare R2 for project storage | Accepted | 2026-08-04 |
 
 <!-- Add a row for every new ADR. Keep it sorted by number. -->
 

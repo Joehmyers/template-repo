@@ -13,17 +13,11 @@ reading the code.
 ## Commands
 
 ```bash
-# Install dependencies
-<fill-in>
+# Verify the repo — lint, tests, build. THE command; CI runs this exact script.
+ops/check.sh
 
-# Build
-<fill-in>
-
-# Run tests
-<fill-in>
-
-# Lint / format
-<fill-in>
+# Install dependencies (also runs automatically via SessionStart hook)
+ops/setup.sh
 
 # Run locally
 <fill-in>
@@ -38,6 +32,11 @@ ops/fetch-data.sh [prefix]
 ops/push-assets.sh [prefix]
 ```
 
+`ops/check.sh` and `ops/setup.sh` each hold a short configuration block at the
+top — fill in your project's lint, test, build, and install commands there. Put
+them in the script, not in this file: one place that agents, humans, and CI all
+read means the answer to "is this green?" cannot drift between them.
+
 ---
 
 ## Architecture
@@ -48,12 +47,17 @@ ops/push-assets.sh [prefix]
 - `docs/plans/` — implementation plans (how/steps)
 - `docs/decisions/` — decision log: Architecture Decision Records (the durable *why*)
 - `docs/diagrams/` — architecture diagrams (`system-diagram.md`: Mermaid graph + timeline views)
-- `ops/`   — infrastructure and deployment scripts
-- `.claude/` — Claude Code configuration (committed to git)
+- `ops/`   — infrastructure, verification, and deployment scripts
+- `.claude/` — Claude Code configuration (committed to git): `skills/` (workflows,
+  also usable as `/name`), `agents/` (subagents), `rules/` (path-scoped instructions),
+  `settings.json` (permissions and hooks)
+- `.github/` — CI workflow and pull request template
 
 ---
 
 ## Code style
+
+<fill-in>
 
 ---
 
@@ -69,6 +73,17 @@ meaning, the simpler phrasing is correct.
 
 ## Testing
 
+`tests/` is the agent's verification target. `ops/check.sh` is how you run it.
+
+- NEVER modify a test to make it pass; fix the implementation instead.
+- NEVER mock a module that exists in this repo — test it directly.
+- Every test asserts a concrete outcome. A test that cannot fail is not a test.
+- Write the test before the implementation when the file does not exist yet.
+
+The same rules live in `.claude/rules/testing.md`, which Claude Code loads only
+when you touch a test file. They are repeated here so tools without path-scoped
+rules still see them.
+
 ---
 
 ## Repo etiquette
@@ -76,7 +91,7 @@ meaning, the simpler phrasing is correct.
 - Branch naming: `<your-username>/<short-description>` (e.g., `alice/add-login`)
 - Commit style: imperative mood, present tense (`add feature`, not `added feature`)
 - Open a PR for every change, even solo work — it creates a review artifact
-- YOU MUST run tests and lint before pushing
+- YOU MUST run `ops/check.sh` and see it pass before pushing
 - NEVER commit `.env`, secrets, or generated build artifacts
 
 ---
@@ -98,13 +113,14 @@ choice was made. They are the historical "why"; this file is the active "what".
 
 ---
 
-## Architecture decisions
+## Architecture decisions in force
 
-- **Cloud storage: Cloudflare R2.** The bucket is named after the repository
-  (override with `R2_BUCKET`). Bucket lifecycle is managed with **wrangler**
-  (`ops/create-bucket.sh` → `wrangler r2 bucket create <repo-name>`); the R2
-  binding lives in `wrangler.jsonc`. Bulk data transfer uses the S3-compatible
-  API (`ops/fetch-data.sh`) because wrangler has no recursive sync.
+Each line is the rule; the linked ADR carries the reasoning. Read the ADR before
+proposing a change to any of these.
+
+- **Cloud storage is Cloudflare R2**, bucket named after the repository (override
+  with `R2_BUCKET`). Lifecycle via wrangler, bulk transfer via the S3-compatible
+  API. — [ADR-0002](docs/decisions/0002-use-cloudflare-r2-for-project-storage.md)
 
 ---
 
@@ -115,6 +131,9 @@ choice was made. They are the historical "why"; this file is the active "what".
   so they are accessible from anywhere; retrieve them with `ops/fetch-data.sh assets`.
   Without R2 credentials in `.env` the hook is a silent no-op — nothing to configure on a fresh clone.
   Symlinks and secret-looking files (`.env*`, `*.pem`, `*.key`) are never uploaded.
+- Reading `.env`, `*.pem`, `*.key` and `secrets/` is blocked by a deny rule in
+  `.claude/settings.json`. That is enforcement, not advice — do not work around
+  it. If a task genuinely needs a secret, ask for it.
 
 ---
 
@@ -122,15 +141,18 @@ choice was made. They are the historical "why"; this file is the active "what".
 
 For any change touching more than one file:
 1. **Explore** — read relevant files in plan mode (no edits)
-2. **Plan** — write a plan to `docs/plans/<feature>.md`
-3. **Implement** — code against the plan, run tests after each step
+2. **Plan** — write a plan to `docs/plans/<feature>.md` (`/plan <feature>`)
+3. **Implement** — code against the plan, run `ops/check.sh` after each step
 4. **Commit** — descriptive commit message, reference the plan file
 
-For larger features, start with a spec in `docs/specs/<feature>/spec.md` first.
-One-sentence diff? Skip the plan.
+For larger features, start with a spec in `docs/specs/<feature>/spec.md` first
+(`/spec <feature>`). One-sentence diff? Skip the plan.
 
 When a change makes an architecturally significant decision, record it as an ADR
-in `docs/decisions/` (copy `docs/decisions/adr-template.md`).
+in `docs/decisions/` (`/adr <title>`).
+
+`docs/plans/examples/` holds a filled-in plan from this template's own history —
+read it for the level of detail a plan should reach.
 
 ---
 
