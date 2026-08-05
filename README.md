@@ -30,7 +30,9 @@ my-project/
 │       └── code-reviewer.md  # Example: adversarial, read-only diff reviewer
 ├── .github/
 │   ├── workflows/ci.yml      # CI — runs ops/check.sh on every pull request
+│   ├── CODEOWNERS            # Who reviews what — replace the handles on clone
 │   └── pull_request_template.md
+├── LICENSE                   # MIT — replace with your own terms
 ├── docs/
 │   ├── specs/                # Feature specs — the "what/why"
 │   │   └── SPEC_TEMPLATE.md  # Copy this when writing a new spec
@@ -137,6 +139,8 @@ behind the code, so past decisions aren't silently contradicted.
 | `AGENTS.md` | Fill in code style, how to run locally, gotchas (the canonical instructions) |
 | `.claude/settings.json` | Permissions and hooks; the `deny` list already blocks reading secrets |
 | `.github/workflows/ci.yml` | Add your language toolchain step before `ops/setup.sh` |
+| `.github/CODEOWNERS` | Replace `@Joehmyers` with your own handles or teams |
+| `LICENSE` | MIT by default — replace the copyright line, or the whole file |
 | `docs/specs/SPEC_TEMPLATE.md` | Copy and fill for each new feature spec |
 | `docs/plans/PLAN_TEMPLATE.md` | Copy and fill for each implementation plan |
 | `docs/decisions/adr-template.md` | Copy and fill to record each significant decision |
@@ -166,3 +170,10 @@ you have one.
 - [Architecture Decision Records](https://adr.github.io/) — ADR/MADR formats and tooling
 - [Claude Code documentation](https://docs.anthropic.com/en/docs/claude-code)
 - [Claude Code best practices](https://www.anthropic.com/engineering/claude-code-best-practices)
+
+---
+
+## License
+
+[MIT](LICENSE). Projects cloned from this template are yours — replace the
+`LICENSE` file with whatever terms you want.
