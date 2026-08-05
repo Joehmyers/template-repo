@@ -24,7 +24,9 @@ changed; an ADR records why nobody should quietly change it back.
 4. **Fill in the frontmatter and every section.** One decision per record, a page
    or two. Always list the real alternatives that were on the table — "we just
    picked it" is not a rationale, and the alternatives are what a future reader
-   needs in order to reopen the question honestly.
+   needs in order to reopen the question honestly. Follow `docs/style-guide.md`:
+   an ADR is read years later by someone who was not there, so define every term
+   of art on first use and state consequences as concrete outcomes.
 5. **Add a row** to the index table in `docs/decisions/README.md`.
 6. **If this supersedes a past decision:** set the old record's `status` to
    `superseded by ADR-NNNN` and its `superseded-by` field, and set `supersedes` on
