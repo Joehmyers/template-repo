@@ -63,11 +63,32 @@ read means the answer to "is this green?" cannot drift between them.
 
 ## Writing style
 
-All prose in this repo — docs, specs, plans, ADRs, commit messages, PR
-descriptions, comments, error messages — follows `docs/style-guide.md`:
-plain English, Orwell's rules, active voice, and every term of art defined on
-first use. Apply Orwell's razor: if a simpler phrasing carries the same
-meaning, the simpler phrasing is correct.
+**All prose in this repo follows [`docs/style-guide.md`](docs/style-guide.md)** —
+docs, specs, plans, ADRs, commit messages, PR descriptions, code comments,
+identifiers, and error messages. Read it before writing anything longer than a
+sentence.
+
+The test for every sentence: could a competent outsider understand it on the
+first read? If not, rewrite it. Orwell's six rules, in short:
+
+1. No stale metaphor or figure of speech you are used to seeing in print.
+2. Never a long word where a short one will do (*utilize* → use).
+3. If you can cut a word, cut it ("in order to" → "to").
+4. Never the passive where the active works — passive hides who does what.
+5. No jargon where everyday English exists; define the terms of art you keep.
+6. Break any of these sooner than say anything outright barbarous.
+
+**Orwell's razor:** if a simpler phrasing carries the same meaning, the simpler
+phrasing is correct.
+
+Also: define every term of art on first use, use one name per concept, and
+prefer numbers to adjectives ("cuts p95 from 800 ms to 120 ms", not
+"significantly faster").
+
+The same rules live in `.claude/rules/writing.md`, which Claude Code loads when
+you touch a Markdown file. They are repeated here so tools without path-scoped
+rules still see them, and because they apply to prose that is not a file at all
+— commit messages, PR descriptions, error strings.
 
 ---
 

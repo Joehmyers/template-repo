@@ -21,7 +21,8 @@ my-project/
 │   ├── settings.json         # Team permissions and hooks (committed)
 │   ├── settings.local.json   # Personal overrides (gitignored)
 │   ├── rules/                # Path-scoped instructions, loaded on matching files
-│   │   └── testing.md        # Example: test-file rules
+│   │   ├── writing.md        # Orwell's rules — loads when touching any Markdown
+│   │   └── testing.md        # Test-file rules — loads when touching a test
 │   ├── skills/               # Workflows — auto-loaded when relevant, or run as /name
 │   │   ├── spec/             # /spec — write a feature spec
 │   │   ├── plan/             # /plan — write an implementation plan
@@ -45,7 +46,7 @@ my-project/
 │   │   └── 0001-record-architecture-decisions.md  # Bootstrap ADR
 │   ├── diagrams/             # Architecture diagrams (Mermaid, rendered by GitHub)
 │   │   └── system-diagram.md # System diagram — graph + timeline views (placeholder)
-│   └── style-guide.md        # Writing style — plain English, Orwell's rules, defined terms
+│   └── style-guide.md        # THE writing standard — plain English, Orwell's rules, defined terms
 ├── wrangler.jsonc            # Cloudflare wrangler config — R2 bucket binding (bucket = repo name)
 ├── src/                      # Product source code
 ├── tests/                    # Test suite
@@ -109,6 +110,33 @@ instead of guessing whether its change works.
 
 ---
 
+## One writing standard
+
+Everything written in this repo — docs, specs, plans, ADRs, commit messages, PR
+descriptions, code comments, identifiers, error messages — follows
+**[`docs/style-guide.md`](docs/style-guide.md)**: plain English, Orwell's rules,
+active voice, every term of art defined on first use.
+
+The test for every sentence: *could a competent outsider understand it on the
+first read?* If not, rewrite it. **Orwell's razor**, in one line: if a simpler
+phrasing carries the same meaning, the simpler phrasing is correct.
+
+This matters more with agents than without them. A model will happily produce
+fluent, confident prose that says nothing — "implements a robust retry strategy"
+instead of "retries three times, then drops the message". The style guide is
+what makes the difference reviewable. Three mechanisms keep it in force:
+
+| Where | What it does |
+|-------|--------------|
+| `docs/style-guide.md` | The full standard, with examples and a words-to-avoid table |
+| `AGENTS.md` | Summarises Orwell's six rules for every agent, every session |
+| `.claude/rules/writing.md` | Loads the rules automatically whenever Claude touches a Markdown file |
+
+The pull request template makes it a checklist item, so nobody merges prose
+nobody read.
+
+---
+
 ## Recommended workflow (explore → plan → code → commit)
 
 | Step | What to do |
@@ -155,7 +183,7 @@ Everything under `.claude/` is committed, so your whole team gets the same setup
 |-----|-------|--------------|
 | **Skill** | `.claude/skills/<name>/SKILL.md` | A workflow Claude loads when its `description` matches the task, or you run `/<name>`. This is where `/spec`, `/plan`, and `/adr` live. |
 | **Subagent** | `.claude/agents/<name>.md` | A specialist with its own context window and tool list, for work that would otherwise flood the main conversation. |
-| **Rule** | `.claude/rules/<topic>.md` | Instructions that load only when Claude touches files matching the `paths` frontmatter — keeps `AGENTS.md` short. |
+| **Rule** | `.claude/rules/<topic>.md` | Instructions that load only when Claude touches files matching the `paths` frontmatter — keeps `AGENTS.md` short. Ships with `writing.md` (any Markdown) and `testing.md` (test files). |
 | **Hook** | `.claude/settings.json` | A shell command at a lifecycle event. Unlike an instruction, a hook runs whether or not the agent decides to. |
 
 Custom slash commands and skills are the same thing now, so this template uses

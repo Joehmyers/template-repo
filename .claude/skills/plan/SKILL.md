@@ -23,7 +23,9 @@ the user's description for a change too small to need one.
    The template is the single source of truth for the section layout.
 5. **Write concrete steps.** Each step names the file to create or edit and the
    function to add or change. "Refactor the handler" is not a step; "split
-   `handle_request` in `src/api.py` into parse and dispatch" is.
+   `handle_request` in `src/api.py` into parse and dispatch" is. Follow
+   `docs/style-guide.md`: active voice, short sentences, numbers over
+   adjectives.
 6. **End with verification.** The last steps are always: write or update tests,
    run `ops/check.sh`, fix failures, commit.
 7. **Ask the user to approve** before leaving plan mode.
