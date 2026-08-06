@@ -24,17 +24,21 @@ my-project/
 │   │   ├── writing.md        # Orwell's rules — loads when touching any Markdown
 │   │   └── testing.md        # Test-file rules — loads when touching a test
 │   ├── skills/               # Workflows — auto-loaded when relevant, or run as /name
+│   │   ├── research/         # /research — investigate a question against real sources
 │   │   ├── spec/             # /spec — write a feature spec
 │   │   ├── plan/             # /plan — write an implementation plan
 │   │   └── adr/              # /adr — record an architecture decision
 │   └── agents/               # Specialized subagent definitions
-│       └── code-reviewer.md  # Example: adversarial, read-only diff reviewer
+│       ├── researcher.md     # Investigates one question in its own context
+│       └── code-reviewer.md  # Adversarial, read-only diff reviewer
 ├── .github/
 │   ├── workflows/ci.yml      # CI — runs ops/check.sh on every pull request
 │   ├── CODEOWNERS            # Who reviews what — replace the handles on clone
 │   └── pull_request_template.md
 ├── LICENSE                   # MIT — replace with your own terms
 ├── docs/
+│   ├── research/             # Sourced findings behind a decision — the evidence
+│   │   └── RESEARCH_TEMPLATE.md
 │   ├── specs/                # Feature specs — the "what/why"
 │   │   └── SPEC_TEMPLATE.md  # Copy this when writing a new spec
 │   ├── plans/                # Implementation plans — the "how"
@@ -141,6 +145,7 @@ nobody read.
 
 | Step | What to do |
 |------|-----------|
+| **Research** | `/research <question>` when the choice needs evidence, not recall |
 | **Explore** | Enter plan mode (`Shift+Tab`); ask Claude to read relevant files |
 | **Plan** | Use `/plan <feature>` to write an implementation plan to `docs/plans/` |
 | **Implement** | Exit plan mode; Claude codes against the plan |
@@ -155,6 +160,37 @@ When a change makes a significant, hard-to-reverse choice, record it in the
 **decision log** with `/adr <title>` — see [`docs/decisions/`](docs/decisions/).
 These Architecture Decision Records give both humans and agents the durable *why*
 behind the code, so past decisions aren't silently contradicted.
+
+---
+
+## Deep research
+
+```bash
+/research "which Postgres-backed job queue survives 10k jobs/minute?"
+```
+
+Writes cited findings to `docs/research/<topic>.md`, which then feeds `/adr` and
+`/spec`. It is not a web search with better manners — four things make it
+different:
+
+- **Parallel, isolated contexts.** The question is decomposed into
+  sub-questions, and a `researcher` subagent takes each one. Every subagent gets
+  a full context window, so ten pages of documentation get read and returned as
+  five cited lines. The raw pages never touch your conversation.
+- **Primary sources, actually read.** Documentation, source code, release notes,
+  issue threads — opened, not skimmed from search snippets. A snippet is a
+  pointer, not evidence.
+- **Disagreement survives.** When two sources conflict, both are cited and the
+  conflict is reported. Averaging them into one confident sentence destroys the
+  most useful finding in the document.
+- **The gaps are written down.** Every findings document has a **Not
+  established** and a **Not checked** section. A reader who trusts a gap they
+  did not know about is worse off than one who had no research at all.
+
+The failure mode this exists to prevent is a model answering a library-choice
+question from memory, fluently and out of date. If the network is unavailable,
+the skill says so and marks the document partial rather than falling back on
+recall.
 
 ---
 
@@ -181,8 +217,8 @@ Everything under `.claude/` is committed, so your whole team gets the same setup
 
 | Add | Where | What it does |
 |-----|-------|--------------|
-| **Skill** | `.claude/skills/<name>/SKILL.md` | A workflow Claude loads when its `description` matches the task, or you run `/<name>`. This is where `/spec`, `/plan`, and `/adr` live. |
-| **Subagent** | `.claude/agents/<name>.md` | A specialist with its own context window and tool list, for work that would otherwise flood the main conversation. |
+| **Skill** | `.claude/skills/<name>/SKILL.md` | A workflow Claude loads when its `description` matches the task, or you run `/<name>`. This is where `/research`, `/spec`, `/plan`, and `/adr` live. |
+| **Subagent** | `.claude/agents/<name>.md` | A specialist with its own context window and tool list, for work that would otherwise flood the main conversation — `researcher` and `code-reviewer`. |
 | **Rule** | `.claude/rules/<topic>.md` | Instructions that load only when Claude touches files matching the `paths` frontmatter — keeps `AGENTS.md` short. Ships with `writing.md` (any Markdown) and `testing.md` (test files). |
 | **Hook** | `.claude/settings.json` | A shell command at a lifecycle event. Unlike an instruction, a hook runs whether or not the agent decides to. |
 
