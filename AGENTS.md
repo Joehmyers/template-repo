@@ -43,6 +43,7 @@ read means the answer to "is this green?" cannot drift between them.
 
 - `src/`   — product source code
 - `tests/` — test suite (the agent's verification target)
+- `docs/research/` — sourced findings behind a decision (the evidence)
 - `docs/specs/` — feature specs (what/why)
 - `docs/plans/` — implementation plans (how/steps)
 - `docs/decisions/` — decision log: Architecture Decision Records (the durable *why*)
@@ -169,8 +170,12 @@ For any change touching more than one file:
 For larger features, start with a spec in `docs/specs/<feature>/spec.md` first
 (`/spec <feature>`). One-sentence diff? Skip the plan.
 
+When the choice needs evidence rather than recall — which library, which
+protocol, what the prior art is — run `/research <question>` first. It fans out
+subagents over real sources and writes cited findings to `docs/research/`.
+
 When a change makes an architecturally significant decision, record it as an ADR
-in `docs/decisions/` (`/adr <title>`).
+in `docs/decisions/` (`/adr <title>`). Cite the research document in it.
 
 `docs/plans/examples/` holds a filled-in plan from this template's own history —
 read it for the level of detail a plan should reach.
