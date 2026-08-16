@@ -46,7 +46,7 @@ read means the answer to "is this green?" cannot drift between them.
 - `docs/research/` — sourced findings behind a decision (the evidence)
 - `docs/specs/` — feature specs (what/why)
 - `docs/plans/` — implementation plans (how/steps)
-- `docs/decisions/` — decision log: Architecture Decision Records (the durable *why*)
+- `docs/decisions/` — decision records (the durable *why*)
 - `docs/diagrams/` — architecture diagrams (`system-diagram.md`: Mermaid graph + timeline views)
 - `ops/`   — infrastructure, verification, and deployment scripts
 - `.claude/` — Claude Code configuration (committed to git): `skills/` (workflows,
@@ -65,8 +65,8 @@ read means the answer to "is this green?" cannot drift between them.
 ## Writing style
 
 **All prose in this repo follows [`docs/style-guide.md`](docs/style-guide.md)** —
-docs, specs, plans, ADRs, commit messages, PR descriptions, code comments,
-identifiers, and error messages. Read it before writing anything longer than a
+docs, specs, plans, decision records, commit messages, PR descriptions, code
+comments, identifiers, and error messages. Read it before writing anything longer than a
 sentence.
 
 The test for every sentence: could a competent outsider understand it on the
@@ -118,16 +118,18 @@ rules still see them.
 
 ---
 
-## Decision log
+## Decisions
 
-`docs/decisions/` holds the project's **Architecture Decision Records (ADRs)** —
-short, immutable Markdown files that record *why* a significant, hard-to-reverse
-choice was made. They are the historical "why"; this file is the active "what".
+`docs/decisions/` holds the project's **decision records** — short, immutable
+Markdown files, numbered `D-0001` and up, that record *why* a significant,
+hard-to-reverse choice was made. They are the historical "why"; this file is the
+active "what". `docs/decisions/README.md` owns the format and workflow; the
+rules below are repeated here so agents see them without opening it.
 
 - **Before proposing an architectural change, consult `docs/decisions/README.md`
-  and read any relevant ADR.** Do not contradict an `Accepted` decision.
-- If a decision genuinely needs to change, propose a **new** ADR that supersedes
-  the old one (copy `docs/decisions/adr-template.md`) — never rewrite an accepted
+  and read any relevant record.** Do not contradict an `Accepted` decision.
+- If a decision genuinely needs to change, write a **new** record that supersedes
+  the old one (copy `docs/decisions/template.md`) — never rewrite an accepted
   record.
 - Log only **architecturally significant** decisions (costly to change; would
   need coordination, migration, or risk management to reverse). Skip trivial,
@@ -137,12 +139,12 @@ choice was made. They are the historical "why"; this file is the active "what".
 
 ## Architecture decisions in force
 
-Each line is the rule; the linked ADR carries the reasoning. Read the ADR before
+Each line is the rule; the linked record carries the reasoning. Read it before
 proposing a change to any of these.
 
 - **Cloud storage is Cloudflare R2**, bucket named after the repository (override
   with `R2_BUCKET`). Lifecycle via wrangler, bulk transfer via the S3-compatible
-  API. — [ADR-0002](docs/decisions/0002-use-cloudflare-r2-for-project-storage.md)
+  API. — [D-0001](docs/decisions/D-0001-use-cloudflare-r2-for-project-storage.md)
 
 ---
 
@@ -174,8 +176,8 @@ When the choice needs evidence rather than recall — which library, which
 protocol, what the prior art is — run `/research <question>` first. It fans out
 subagents over real sources and writes cited findings to `docs/research/`.
 
-When a change makes an architecturally significant decision, record it as an ADR
-in `docs/decisions/` (`/adr <title>`). Cite the research document in it.
+When a change makes an architecturally significant decision, record it in
+`docs/decisions/` (`/decision <title>`). Cite the research document in it.
 
 `docs/plans/examples/` holds a filled-in plan from this template's own history —
 read it for the level of detail a plan should reach.

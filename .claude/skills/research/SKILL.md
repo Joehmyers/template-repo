@@ -8,8 +8,8 @@ argument-hint: [question or topic]
 Question: `$ARGUMENTS`
 
 Produce a **findings document**, not an answer in chat. The document outlives the
-conversation, gets reviewed, and becomes the evidence behind an ADR. Chat does
-not.
+conversation, gets reviewed, and becomes the evidence behind a decision record.
+Chat does not.
 
 You are researching so that someone can decide. Do not decide for them. Present
 what the sources support, what they do not, and what is still unknown.
@@ -22,8 +22,9 @@ what the sources support, what they do not, and what is still unknown.
    a wrong question wastes the whole run.
 
 2. **Check what is already decided.** Read `docs/decisions/README.md` and any
-   relevant ADR. If an `Accepted` decision already settles this, say so and stop;
-   the question is whether to supersede it, which is a different job (`/adr`).
+   relevant record. If an `Accepted` decision already settles this, say so and
+   stop; the question is whether to supersede it, which is a different job
+   (`/decision`).
    Also check `docs/research/` — this may already have been researched.
 
 3. **Decompose into sub-questions.** Three to six, each independently
@@ -51,7 +52,7 @@ what the sources support, what they do not, and what is still unknown.
    gap they did not know about is worse off than one who had no research at all.
 
 8. **Hand off.** Say which follow-up fits:
-   - `/adr <title>` — the research settles a hard-to-reverse choice
+   - `/decision <title>` — the research settles a hard-to-reverse choice
    - `/spec <feature>` — the research clears the way to build
    - More research — name the specific gap that blocks a decision
 

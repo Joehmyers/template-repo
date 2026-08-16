@@ -16,9 +16,9 @@ the user's description for a change too small to need one.
 1. **Read the spec** at `docs/specs/$ARGUMENTS/spec.md` if it exists.
 2. **Explore in plan mode.** Read the source files the change will touch. Make no
    edits at this stage — the plan is the artifact, not a first draft of the code.
-3. **Check the decision log.** Read `docs/decisions/README.md` and any relevant
-   ADR. If the plan contradicts an `Accepted` decision, stop and propose a new
-   ADR with `/adr` instead of working around it.
+3. **Check past decisions.** Read `docs/decisions/README.md` and any relevant
+   record. If the plan contradicts an `Accepted` decision, stop and propose a
+   superseding record with `/decision` instead of working around it.
 4. **Copy the template.** `docs/plans/PLAN_TEMPLATE.md` → `docs/plans/$ARGUMENTS.md`.
    The template is the single source of truth for the section layout.
 5. **Write concrete steps.** Each step names the file to create or edit and the

@@ -10,11 +10,11 @@ Delete any section that does not apply.
 
 ## Why
 
-<!-- The problem this solves. Link the spec, plan, or ADR that carries the full reasoning. -->
+<!-- The problem this solves. Link the spec, plan, or decision record that carries the full reasoning. -->
 
 - Spec: <!-- docs/specs/<feature>/spec.md, or "none — small, self-contained change" -->
 - Plan: <!-- docs/plans/<feature>.md, or "none — one-sentence diff" -->
-- ADR: <!-- docs/decisions/NNNN-<title>.md, if this makes a hard-to-reverse choice -->
+- Decision: <!-- docs/decisions/D-NNNN-<title>.md, if this makes a hard-to-reverse choice -->
 
 ## Verification
 
@@ -29,5 +29,5 @@ ops/check.sh
 - [ ] `ops/check.sh` passes locally
 - [ ] Prose follows [`docs/style-guide.md`](../docs/style-guide.md)
 - [ ] No `.env`, secrets, or build artifacts committed
-- [ ] Any architecturally significant choice is recorded as an ADR, and no
-      `Accepted` ADR is silently contradicted
+- [ ] Any architecturally significant choice is recorded in `docs/decisions/`,
+      and no `Accepted` decision is silently contradicted

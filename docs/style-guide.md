@@ -1,8 +1,8 @@
 # Style guide
 
 Plain English, everywhere. This guide applies to everything written in this
-repository: README, specs, plans, ADRs, diagrams, commit messages, PR
-descriptions, code comments, identifiers, error messages, and UI copy.
+repository: README, specs, plans, decision records, diagrams, commit messages,
+PR descriptions, code comments, identifiers, error messages, and UI copy.
 
 The test for every sentence: **could a competent outsider understand it on the
 first read?** If not, rewrite it.
@@ -48,7 +48,7 @@ Undefined terms are where readers get lost and where teams silently disagree.
 - **Name the concept, not the implementation.** A term should survive a
   refactor.
 - **If a doc introduces three or more terms, add a Definitions section** at
-  the top. Specs and ADRs almost always need one.
+  the top. Specs and decision records almost always need one.
 - **Never redefine an established term.** If your "session" differs from the
   codebase's existing "session", choose a new word.
 
@@ -97,7 +97,7 @@ Undefined terms are where readers get lost and where teams silently disagree.
   why in the first line.
 - **Error messages** — say what happened, what it means, and what to do:
   "Config file not found at ./config.toml — copy config.example.toml to start."
-- **Specs, plans, ADRs** — the templates in `docs/` already lead with
+- **Specs, plans, decision records** — the templates in `docs/` already lead with
   context and decision. Fill them in the same register: short sentences,
   defined terms, active voice.
 

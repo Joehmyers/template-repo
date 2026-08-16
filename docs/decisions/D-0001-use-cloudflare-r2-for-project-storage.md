@@ -1,17 +1,15 @@
 ---
 status: "accepted"
 date: 2026-08-04
-decision-makers: []
-consulted: []
-informed: []
+decider: []
 tags: [storage, infrastructure, cloud]
 supersedes: []
-superseded-by: null
+superseded: null
 ---
 
-# 0002. Use Cloudflare R2 for project storage
+# D-0001. Use Cloudflare R2 for project storage
 
-## Context and problem statement
+## Context
 
 Projects built from this template need somewhere to keep two kinds of file that
 do not belong in git: input data an agent reads (datasets, fixtures, dumps) and
@@ -27,7 +25,7 @@ The choice is deliberately easy to walk away from: the whole surface is three
 shell scripts and one config file, all speaking the S3 API. This record exists
 because the *default* is load-bearing, not because the coupling is deep.
 
-## Considered options
+## Options
 
 - **Cloudflare R2**, driven by wrangler for bucket lifecycle and the
   S3-compatible API for bulk transfer.
@@ -53,18 +51,18 @@ from this template.
 
 ## Consequences
 
-- **Good:** no egress fees, so an agent can pull the same dataset on every run
-  without a bill that scales with how often it works.
-- **Good:** the S3-compatible API means the standard AWS CLI works, and the two
-  transfer scripts would port to any S3-compatible provider by changing one
+- **Benefits:** no egress fees, so an agent can pull the same dataset on every
+  run without a bill that scales with how often it works.
+- **Benefits:** the S3-compatible API means the standard AWS CLI works, and the
+  two transfer scripts would port to any S3-compatible provider by changing one
   endpoint URL.
-- **Good:** naming the bucket after the repository removes a configuration step
-  an agent would otherwise have to ask a human about.
-- **Trade-offs:** two tools instead of one — wrangler for lifecycle, AWS CLI for
+- **Benefits:** naming the bucket after the repository removes a configuration
+  step an agent would otherwise have to ask a human about.
+- **Costs:** two tools instead of one — wrangler for lifecycle, AWS CLI for
   transfer — because neither covers both jobs. A Cloudflare account is needed to
   use the storage features at all.
-- **Trade-offs:** R2 has no region pinning in the S3 sense; every request uses
+- **Costs:** R2 has no region pinning in the S3 sense; every request uses
   `region=auto`. Projects with data-residency requirements should revisit this.
-- **Follow-ups:** the checksum workarounds in the transfer scripts
-  (`AWS_REQUEST_CHECKSUM_CALCULATION=when_required`) exist because R2 rejects the
-  newer AWS CLI default integrity checksums. Remove them if R2 adds support.
+- **Costs:** the transfer scripts carry a checksum workaround
+  (`AWS_REQUEST_CHECKSUM_CALCULATION=when_required`) because R2 rejects the
+  newer AWS CLI default integrity checksums. Remove it if R2 adds support.
