@@ -48,7 +48,7 @@ So one explains the past while the other governs the future.
 
 1. Copy [`template.md`](template.md) to `D-NNNN-short-title.md`, where `NNNN` is
    the next zero-padded number.
-2. Fill in the YAML frontmatter and sections. Keep it to a page or two — one
+2. Fill in the YAML frontmatter and sections. Keep it to a page or two: one
    decision per record.
 3. Add a row to the index table above.
 4. Open it in a pull request and review it like code; merge when the status is

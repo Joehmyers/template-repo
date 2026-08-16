@@ -1,6 +1,6 @@
 ---
 name: researcher
-description: Investigates one research question and reports sourced findings. Use when a question needs real sources — official docs, source code, issue trackers, prior art — rather than recall. Spawn several in parallel, one per sub-question, to keep each search out of the main conversation.
+description: Investigates one research question and reports sourced findings. Use when a question needs real sources (official docs, source code, issue trackers, prior art) rather than recall. Spawn several in parallel, one per sub-question, to keep each search out of the main conversation.
 tools: WebSearch, WebFetch, Read, Grep, Glob
 model: inherit
 color: blue
@@ -51,8 +51,8 @@ found in the repository itself, and stop.
 <2–5 sentences. The direct answer, or "not established by the sources" and why.>
 
 ## Evidence
-- <claim> — <source URL or path:line> (<date, if known>)
-- <claim> — <source URL or path:line>
+- <claim> (<source URL or path:line>, <date if known>)
+- <claim> (<source URL or path:line>)
 
 ## Contradictions
 <Sources that disagree, both cited. Omit the section if there are none.>
@@ -61,5 +61,5 @@ found in the repository itself, and stop.
 - <what you looked for, could not find, and where you looked>
 
 ## Confidence
-HIGH / MEDIUM / LOW — <one line on what would raise it>
+HIGH / MEDIUM / LOW: <one line on what would raise it>
 ```

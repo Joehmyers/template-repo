@@ -8,13 +8,13 @@ The repo can pull project data down from R2 (`ops/fetch-data.sh`) but has no upl
 anything created locally stays local. Add the symmetric push side: a `./assets/` directory
 convention for created assets, an `ops/push-assets.sh` script that syncs it to the R2 bucket,
 and a Claude Code `Stop` hook that runs the script automatically at the end of every agent
-turn — so created assets land in R2 by default and are accessible from any machine. The hook
+turn, so created assets land in R2 by default and are accessible from any machine. The hook
 runs the script in `--auto` mode, which exits silently when R2 is not configured, the AWS CLI
 is missing, or there is nothing to push, so fresh clones of the template are unaffected.
 
 ## Steps
 
-- [x] 1. Create `ops/push-assets.sh` — mirrors `ops/fetch-data.sh` (loads `.env`, validates
+- [x] 1. Create `ops/push-assets.sh`, mirroring `ops/fetch-data.sh` (loads `.env`, validates
        `R2_*` vars, `aws s3 sync` with the R2 endpoint and checksum workarounds). Uploads
        `ASSETS_DIR` (default `./assets`) to `s3://$R2_BUCKET/<prefix>` (default prefix
        `assets`, override via arg or `R2_ASSETS_PREFIX`). Never passes `--delete`. Supports
@@ -41,7 +41,7 @@ is missing, or there is nothing to push, so fresh clones of the template are una
 
 | File | Change |
 |------|--------|
-| `ops/push-assets.sh` | New — sync `./assets` up to R2 (manual + `--auto` hook mode) |
+| `ops/push-assets.sh` | New: sync `./assets` up to R2 (manual + `--auto` hook mode) |
 | `.claude/settings.json` | New `Stop` hook: auto-push assets after each agent turn |
 | `.gitignore` | Ignore `assets/` |
 | `.env.example` | Document `R2_ASSETS_PREFIX`, `ASSETS_DIR` |
@@ -60,8 +60,8 @@ ops/push-assets.sh --auto; echo "exit=$?"
 # Manual mode fails loudly without config
 ops/push-assets.sh || true
 
-# End-to-end with a stubbed aws CLI (asserts the sync command line)
-# — see the fake-aws harness used during development
+# End-to-end with a stubbed aws CLI (asserts the sync command line);
+# see the fake-aws harness used during development
 ```
 
 ---

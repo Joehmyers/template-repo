@@ -1,13 +1,13 @@
 # System Diagram
 
-> **Status:** Placeholder — replace the `fill-in` nodes and events below as the architecture takes shape.
+> **Status:** Placeholder. Replace the `fill-in` nodes and events below as the architecture takes shape.
 
 The living system diagram for this project, in two views:
 
-1. **Graph view** — components and how they connect (structure).
-2. **Timeline view** — how the system evolves over time (milestones).
+1. **Graph view**: components and how they connect (structure).
+2. **Timeline view**: how the system evolves over time (milestones).
 
-Both are written in [Mermaid](https://mermaid.js.org/), so GitHub renders them inline — no image
+Both are written in [Mermaid](https://mermaid.js.org/), so GitHub renders them inline; no image
 files to regenerate. Update this document in the same PR as any change that alters the
 architecture.
 
@@ -25,7 +25,7 @@ flowchart LR
 
     subgraph system["System (fill-in)"]
         api["API / entrypoint (fill-in)"]
-        core["Core logic — src/ (fill-in)"]
+        core["Core logic: src/ (fill-in)"]
         data[("Data store (fill-in)")]
     end
 
@@ -42,7 +42,7 @@ flowchart LR
 ## Timeline view
 
 <!-- Replace the fill-in milestones with real ones. If a sequence or gantt diagram fits your
-     system better, swap the diagram type — keep the two-view structure (graph + time). -->
+     system better, swap the diagram type; keep the two-view structure (graph + time). -->
 
 ```mermaid
 timeline

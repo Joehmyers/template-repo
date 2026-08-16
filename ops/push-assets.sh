@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# push-assets.sh — upload created assets to Cloudflare R2 so they are
+# push-assets.sh: upload created assets to Cloudflare R2 so they are
 # accessible from anywhere.
 #
 # Usage:
@@ -89,7 +89,7 @@ assets_dir="${ASSETS_DIR:-$repo_root/assets}"
 
 if [[ ! -d "$assets_dir" ]] || [[ -z "$(find "$assets_dir/." -type f -print -quit)" ]]; then
   (( auto )) && exit 0
-  echo "error: nothing to push — $assets_dir is missing or empty." >&2
+  echo "error: nothing to push; $assets_dir is missing or empty." >&2
   exit 1
 fi
 
@@ -118,7 +118,7 @@ sync_cmd=(aws s3 sync "$assets_dir" "$dest_url"
 
 if (( auto )); then
   # Hook mode: fail fast on a bad network/endpoint instead of stalling the
-  # turn, and never exit 2 — a Stop hook exiting 2 blocks the session from
+  # turn, and never exit 2; a Stop hook exiting 2 blocks the session from
   # stopping (aws s3 sync exits 2 when files were skipped).
   export AWS_MAX_ATTEMPTS=2
   sync_cmd+=(--cli-connect-timeout 5)

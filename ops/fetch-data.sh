@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# fetch-data.sh — pull project data down from Cloudflare R2.
+# fetch-data.sh: pull project data down from Cloudflare R2.
 #
 # Usage:
 #   ops/fetch-data.sh [prefix]

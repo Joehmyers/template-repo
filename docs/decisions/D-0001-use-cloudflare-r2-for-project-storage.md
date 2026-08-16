@@ -17,7 +17,7 @@ created assets an agent produces (reports, renders, build outputs) that should
 outlive the machine that made them. Committing either bloats the repository;
 leaving both on disk means work vanishes when a cloud or web agent session ends.
 
-An agent cannot pick a storage provider per session — it needs one answer that
+An agent cannot pick a storage provider per session; it needs one answer that
 holds on a fresh clone, with no interview and no per-project configuration. So
 the template has to choose, and record why.
 
@@ -29,9 +29,9 @@ because the *default* is load-bearing, not because the coupling is deep.
 
 - **Cloudflare R2**, driven by wrangler for bucket lifecycle and the
   S3-compatible API for bulk transfer.
-- **Amazon S3** — the reference implementation, the widest tooling support.
-- **Git LFS** — keep large files in the repository itself.
-- **No default** — leave storage unconfigured and make every project choose.
+- **Amazon S3**: the reference implementation, the widest tooling support.
+- **Git LFS**: keep large files in the repository itself.
+- **No default**: leave storage unconfigured and make every project choose.
 
 ## Decision
 
@@ -58,8 +58,8 @@ from this template.
   endpoint URL.
 - **Benefits:** naming the bucket after the repository removes a configuration
   step an agent would otherwise have to ask a human about.
-- **Costs:** two tools instead of one — wrangler for lifecycle, AWS CLI for
-  transfer — because neither covers both jobs. A Cloudflare account is needed to
+- **Costs:** two tools instead of one (wrangler for lifecycle, AWS CLI for
+  transfer) because neither covers both jobs. A Cloudflare account is needed to
   use the storage features at all.
 - **Costs:** R2 has no region pinning in the S3 sense; every request uses
   `region=auto`. Projects with data-residency requirements should revisit this.

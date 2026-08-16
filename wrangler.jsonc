@@ -1,5 +1,5 @@
 {
-  // Wrangler configuration — https://developers.cloudflare.com/workers/wrangler/configuration/
+  // Wrangler configuration: https://developers.cloudflare.com/workers/wrangler/configuration/
   //
   // Cloud storage for this project is assumed to be Cloudflare R2, managed with
   // wrangler. The bucket is named after the repository; create it with

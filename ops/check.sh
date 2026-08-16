@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# check.sh — the one command that says whether this repo is green.
+# check.sh: the one command that says whether this repo is green.
 #
 # Agents, humans and CI all run this same script, so the answer to "is this
 # change safe to push?" cannot drift between them. AGENTS.md points agents
@@ -10,7 +10,7 @@
 #   ops/check.sh            Run every configured step; skip the unconfigured ones.
 #   ops/check.sh --strict   Also fail when a step is still unconfigured.
 #
-# Configure the three commands in the block below — one line each. An empty
+# Configure the three commands in the block below, one line each. An empty
 # value means "not configured yet", and the step is skipped with a note.
 # Environment variables of the same name override the values here, so CI or a
 # teammate can run a different command without editing this file.
@@ -50,13 +50,13 @@ done
 failed=()
 skipped=()
 
-# Run one named step. Prints its output, records the outcome, never exits early
-# — a full run tells you everything that is broken, not just the first thing.
+# Run one named step. Prints its output, records the outcome, never exits early,
+# so a full run tells you everything that is broken, not just the first thing.
 run_step() {
   local name="$1" command="$2"
 
   if [[ -z "$command" ]]; then
-    echo "SKIP  ${name} — not configured (set CHECK_${name^^} in ops/check.sh)"
+    echo "SKIP  ${name}: not configured (set CHECK_${name^^} in ops/check.sh)"
     skipped+=("$name")
     return 0
   fi
@@ -86,7 +86,7 @@ if (( ${#shell_scripts[@]} )); then
   if command -v shellcheck >/dev/null 2>&1; then
     run_step "shellcheck" "shellcheck ${shell_scripts[*]}"
   else
-    echo "SKIP  shellcheck — not installed (https://www.shellcheck.net/)"
+    echo "SKIP  shellcheck: not installed (https://www.shellcheck.net/)"
     skipped+=("shellcheck")
   fi
 fi
