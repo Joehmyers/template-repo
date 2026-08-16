@@ -1,41 +1,39 @@
 # Decisions
 
-This folder holds the project's **decision records** — one short, immutable
-Markdown file per significant, hard-to-reverse choice, capturing *why* it was
-made. The format is Michael Nygard's
+This folder holds the **decision records** for the project. By these we mean one short and immutable
+Markdown file for each design choice that is hard to reverse. Crucially we capture *why* it was
+made. This format is inspired by Michael Nygard's
 [Architecture Decision Record](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions)
-pattern, simplified from [MADR](https://adr.github.io/madr/); here the records
-are plain **decisions**, numbered `D-0001` and up.
+pattern and simplified from [MADR](https://adr.github.io/madr/). Here the records
+are plain decisions and are numbered `D-0001` and up.
 
 A record holds one decision: the context that forced it, the alternatives that
-were rejected, and the consequences. Records are **append-only** — when a
-decision changes, write a *new* record that supersedes the old one (step 5
-below). Each record was true on the day it was written, and the chain of
-supersession tells the story of how the system evolved.
+were rejected, and the consequences. Records can only be **appended** to this list. When a
+decision changes, you must write a *new* record that supersedes the old one by following the steps below.  
+Each record was true on the day it was written and the chain of supersession tells the whole story of how the system evolved and why.
 
-## Why this exists (especially for agents)
+## Why this exists
 
-A commit message records *what* changed; a decision record explains *why* it was
+A commit message records *what* changed while a decision record explains *why* it was
 the right answer at the time, which constraints applied, and what alternatives
 were rejected. A human can compensate for missing rationale by asking a
-colleague — an agent cannot. Without recorded rationale, an agent infers intent
+colleague while an agent cannot. Without recorded rationale an agent infers intent
 from code patterns and will faithfully reproduce a convention without knowing
-whether it is deliberate, deprecated, or accidental — producing plausible,
-working, *inconsistent* code at speed.
+whether it is deliberate, deprecated, or accidental.
 
-This folder (the historical "why") and `AGENTS.md` (the active "what") are
+This folder provides the historical "why" while `AGENTS.md` provides the active "what" and so these are
 complementary: a record says *"we chose Postgres because we needed transactional
 consistency"*; an `AGENTS.md` rule says *"all data access goes through the
 existing Postgres pool; never add a new database dependency without approval."*
-One explains the past; the other governs the future.
+So one explains the past while the other governs the future.
 
 ## For agents
 
-- **Before proposing an architectural change, read this index and any relevant
+- Before proposing any deep change to this project you must **read this index and any relevant
   record.**
-- **Do not contradict an `Accepted` decision.** If it genuinely needs to change,
-  supersede it (step 5 below) — never edit the accepted record.
-- When retrieving decisions, **filter on `status`** so superseded/deprecated
+- **You must not contradict an `Accepted` decision.** If it genuinely needs to change then you 
+  can supersede it by following the steps below but only after asking a human and never edit the accepted record.
+- When retrieving decisions always **filter on `status`** so superseded/deprecated
   records never outrank the current one.
 
 ## Index
@@ -59,6 +57,6 @@ One explains the past; the other governs the future.
    `superseded by D-NNNN` and its `superseded` field, and set `supersedes` on
    the new one.
 
-Log only **architecturally significant** decisions — ones that are costly to
+Log only **architecturally significant** decisions, ones that are costly to
 change or would need coordination, migration, or risk management to reverse.
-Skip trivial, easily-reversed choices a linter or convention already covers.
+Skip trivial and reversible choices a linter or convention already covers.
