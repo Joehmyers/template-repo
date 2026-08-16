@@ -29,6 +29,6 @@
 /ops/               @Joehmyers
 /.github/           @Joehmyers
 
-# Decision log. Accepted ADRs are immutable — a change here is either a new
+# Decisions. Accepted records are immutable — a change here is either a new
 # record or a mistake.
 /docs/decisions/    @Joehmyers

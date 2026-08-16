@@ -27,7 +27,7 @@ my-project/
 │   │   ├── research/         # /research — investigate a question against real sources
 │   │   ├── spec/             # /spec — write a feature spec
 │   │   ├── plan/             # /plan — write an implementation plan
-│   │   └── adr/              # /adr — record an architecture decision
+│   │   └── decision/         # /decision — record an architecture decision
 │   └── agents/               # Specialized subagent definitions
 │       ├── researcher.md     # Investigates one question in its own context
 │       └── code-reviewer.md  # Adversarial, read-only diff reviewer
@@ -44,10 +44,10 @@ my-project/
 │   ├── plans/                # Implementation plans — the "how"
 │   │   ├── PLAN_TEMPLATE.md  # Copy this when writing a new plan
 │   │   └── examples/         # A filled-in plan, for reference
-│   ├── decisions/            # Decision log — Architecture Decision Records (the durable "why")
-│   │   ├── README.md         # Index table + how to write an ADR
-│   │   ├── adr-template.md   # Copy this when recording a new decision
-│   │   └── 0001-record-architecture-decisions.md  # Bootstrap ADR
+│   ├── decisions/            # Decision records — the durable "why"
+│   │   ├── README.md         # Index table + how to write a decision
+│   │   ├── template.md       # Copy this when recording a new decision
+│   │   └── D-0001-use-cloudflare-r2-for-project-storage.md  # One record per decision
 │   ├── diagrams/             # Architecture diagrams (Mermaid, rendered by GitHub)
 │   │   └── system-diagram.md # System diagram — graph + timeline views (placeholder)
 │   └── style-guide.md        # THE writing standard — plain English, Orwell's rules, defined terms
@@ -78,7 +78,7 @@ my-project/
 4. **Add your source code** to `src/` and tests to `tests/`.
 5. **Cloud storage (optional)** — storage is assumed to be [Cloudflare R2](https://developers.cloudflare.com/r2/),
    and the bucket is named after the repository
-   ([ADR-0002](docs/decisions/0002-use-cloudflare-r2-for-project-storage.md)).
+   ([D-0001](docs/decisions/D-0001-use-cloudflare-r2-for-project-storage.md)).
    - **Create the bucket** with [wrangler](https://developers.cloudflare.com/workers/wrangler/):
      run `wrangler login`, then `ops/create-bucket.sh` (creates a bucket named after the repo).
      The R2 binding is pre-wired in `wrangler.jsonc`.
@@ -116,8 +116,8 @@ instead of guessing whether its change works.
 
 ## One writing standard
 
-Everything written in this repo — docs, specs, plans, ADRs, commit messages, PR
-descriptions, code comments, identifiers, error messages — follows
+Everything written in this repo — docs, specs, plans, decision records, commit
+messages, PR descriptions, code comments, identifiers, error messages — follows
 **[`docs/style-guide.md`](docs/style-guide.md)**: plain English, Orwell's rules,
 active voice, every term of art defined on first use.
 
@@ -156,10 +156,10 @@ For larger features, start with `/spec <feature>` to write a spec first.
 
 > **One-sentence diff?** Skip the plan. **Touching > 4 files or unclear scope?** Write a spec.
 
-When a change makes a significant, hard-to-reverse choice, record it in the
-**decision log** with `/adr <title>` — see [`docs/decisions/`](docs/decisions/).
-These Architecture Decision Records give both humans and agents the durable *why*
-behind the code, so past decisions aren't silently contradicted.
+When a change makes a significant, hard-to-reverse choice, record it in
+[`docs/decisions/`](docs/decisions/) with `/decision <title>`. These decision
+records give both humans and agents the durable *why* behind the code, so past
+decisions aren't silently contradicted.
 
 ---
 
@@ -169,8 +169,8 @@ behind the code, so past decisions aren't silently contradicted.
 /research "which Postgres-backed job queue survives 10k jobs/minute?"
 ```
 
-Writes cited findings to `docs/research/<topic>.md`, which then feeds `/adr` and
-`/spec`. It is not a web search with better manners — four things make it
+Writes cited findings to `docs/research/<topic>.md`, which then feeds `/decision`
+and `/spec`. It is not a web search with better manners — four things make it
 different:
 
 - **Parallel, isolated contexts.** The question is decomposed into
@@ -207,7 +207,7 @@ recall.
 | `LICENSE` | MIT by default — replace the copyright line, or the whole file |
 | `docs/specs/SPEC_TEMPLATE.md` | Copy and fill for each new feature spec |
 | `docs/plans/PLAN_TEMPLATE.md` | Copy and fill for each implementation plan |
-| `docs/decisions/adr-template.md` | Copy and fill to record each significant decision |
+| `docs/decisions/template.md` | Copy and fill to record each significant decision |
 
 ---
 
@@ -217,7 +217,7 @@ Everything under `.claude/` is committed, so your whole team gets the same setup
 
 | Add | Where | What it does |
 |-----|-------|--------------|
-| **Skill** | `.claude/skills/<name>/SKILL.md` | A workflow Claude loads when its `description` matches the task, or you run `/<name>`. This is where `/research`, `/spec`, `/plan`, and `/adr` live. |
+| **Skill** | `.claude/skills/<name>/SKILL.md` | A workflow Claude loads when its `description` matches the task, or you run `/<name>`. This is where `/research`, `/spec`, `/plan`, and `/decision` live. |
 | **Subagent** | `.claude/agents/<name>.md` | A specialist with its own context window and tool list, for work that would otherwise flood the main conversation — `researcher` and `code-reviewer`. |
 | **Rule** | `.claude/rules/<topic>.md` | Instructions that load only when Claude touches files matching the `paths` frontmatter — keeps `AGENTS.md` short. Ships with `writing.md` (any Markdown) and `testing.md` (test files). |
 | **Hook** | `.claude/settings.json` | A shell command at a lifecycle event. Unlike an instruction, a hook runs whether or not the agent decides to. |
@@ -231,7 +231,7 @@ you have one.
 ## Resources
 
 - [AGENTS.md](https://agents.md) — the open, tool-agnostic instruction-file standard
-- [Architecture Decision Records](https://adr.github.io/) — ADR/MADR formats and tooling
+- [Architecture Decision Records](https://adr.github.io/) — the ADR/MADR pattern behind `docs/decisions/`
 - [Claude Code documentation](https://docs.anthropic.com/en/docs/claude-code)
 - [Claude Code best practices](https://www.anthropic.com/engineering/claude-code-best-practices)
 

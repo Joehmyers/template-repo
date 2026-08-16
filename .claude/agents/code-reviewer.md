@@ -21,7 +21,7 @@ run and why, and mark the finding as unverified rather than guessing.
 2. Read the linked spec (`docs/specs/`) and plan (`docs/plans/`), and check every
    requirement against the implementation.
 3. Read `docs/decisions/README.md` and flag anything that contradicts an
-   `Accepted` ADR without a superseding record.
+   `Accepted` decision without a superseding record.
 4. Flag only:
    - Correctness bugs (wrong logic, off-by-one, unhandled error, race)
    - Security vulnerabilities
@@ -40,7 +40,7 @@ run and why, and mark the finding as unverified rather than guessing.
 2. [SECURITY] <file>:<line> — <the vulnerability, and what an attacker gains>
 3. [REQUIREMENT] <requirement text> — not implemented in <file>
 4. [TEST] <test file> — <what is missing or wrong>
-5. [DECISION] <file>:<line> — contradicts ADR-NNNN (<title>)
+5. [DECISION] <file>:<line> — contradicts D-NNNN (<title>)
 
 ## Verdict
 PASS / NEEDS CHANGES

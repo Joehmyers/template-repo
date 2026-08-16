@@ -18,8 +18,8 @@ is the plan (`/plan`). Write the spec first, get it approved, then plan.
    - What are the acceptance criteria — the observable behaviour that proves it works?
    - What is explicitly out of scope?
    - What is the end-to-end verification step?
-2. **Read the existing context** before writing: `docs/decisions/README.md` and any
-   relevant ADR, so the spec does not contradict an `Accepted` decision.
+2. **Read the existing context** before writing: `docs/decisions/README.md` and
+   any relevant record, so the spec does not contradict an `Accepted` decision.
 3. **Copy the template.** `docs/specs/SPEC_TEMPLATE.md` → `docs/specs/$ARGUMENTS/spec.md`.
    The template is the single source of truth for the section layout — do not
    retype it from memory here.

@@ -90,4 +90,4 @@ Say which evidence carries it, and what would change your mind.
 
 ---
 
-_Next step: `/adr <title>` if this settles a hard-to-reverse choice, `/spec <feature>` if it clears the way to build._
+_Next step: `/decision <title>` if this settles a hard-to-reverse choice, `/spec <feature>` if it clears the way to build._
