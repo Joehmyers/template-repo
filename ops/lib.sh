@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 #
-# lib.sh — shared helpers for the ops/ scripts.
+# lib.sh: shared helpers for the ops/ scripts.
 #
 # Source this from another script:
 #   source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 #
 # Holds the helpers more than one ops/ script needs: locating the repository
 # root, loading .env, and resolving the Cloudflare R2 bucket name (which
-# defaults to the repository name — see docs/decisions/0002-*.md).
+# defaults to the repository name; see docs/decisions/D-0001-*.md).
 
 # Absolute path to the repository root (the parent of ops/).
 ops_repo_root() {

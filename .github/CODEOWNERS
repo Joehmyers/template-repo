@@ -1,4 +1,4 @@
-# CODEOWNERS — who GitHub asks to review which files.
+# CODEOWNERS: who GitHub asks to review which files.
 # https://docs.github.com/en/repositories/managing-your-repositories-security-and-analysis/about-code-owners
 #
 # A pull request that touches a path below automatically requests a review from
@@ -9,7 +9,7 @@
 # Two things silently break a CODEOWNERS file, so check both:
 #   - An owner without write access to the repository is ignored.
 #   - Later rules win. The last matching line decides, not the most specific
-#     one — the opposite of .gitignore.
+#     one (the opposite of .gitignore).
 #
 # On clone: replace @Joehmyers throughout with your own handles or @org/team
 # names. A file full of someone else's username is worse than no file.
@@ -29,6 +29,6 @@
 /ops/               @Joehmyers
 /.github/           @Joehmyers
 
-# Decisions. Accepted records are immutable — a change here is either a new
+# Decisions. Accepted records are immutable: a change here is either a new
 # record or a mistake.
 /docs/decisions/    @Joehmyers

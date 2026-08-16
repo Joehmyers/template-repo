@@ -10,7 +10,7 @@ Spec: [docs/specs/\<feature\>/spec.md](../specs/<feature>/spec.md) _(if applicab
 
 ## Steps
 
-- [ ] 1. <!-- Concrete action — file to create/edit, function to add/change -->
+- [ ] 1. <!-- Concrete action: file to create/edit, function to add/change -->
 - [ ] 2. ...
 - [ ] 3. Write / update tests for the above
 - [ ] 4. Run test suite; fix any failures

@@ -1,7 +1,7 @@
 # Research: <question in one line>
 
 > **Status:** Draft | Complete | Partial (say what is missing) | Superseded by <file>
-> **Date:** YYYY-MM-DD — findings decay; a reader needs to know how old this is.
+> **Date:** YYYY-MM-DD. Findings decay; a reader needs to know how old this is.
 
 ## Question
 
@@ -17,7 +17,7 @@ Good: "Which Postgres-backed job queue supports delayed retries and
 
 <!--
 Five sentences at most. What the sources support, and what they do not.
-Lead with the answer. If the sources do not settle it, say that here — do not
+Lead with the answer. If the sources do not settle it, say that here; do not
 make the reader reach the end to find out.
 -->
 
@@ -37,15 +37,15 @@ One subsection per sub-question. Every claim carries a source: a URL, or a
 
 ### <Sub-question>
 
-- <claim> — [source](url) (<date>)
-- <claim> — `src/file.py:42`
+- <claim> ([source](url), <date>)
+- <claim> (`src/file.py:42`)
 
 ## Options compared
 
 <!--
 Delete this section if the question is not a choice between options.
 Score only on criteria the question named. An empty cell means "not
-established" — never guess to fill the table.
+established"; never guess to fill the table.
 -->
 
 | Option | <criterion> | <criterion> | Evidence |
@@ -56,7 +56,7 @@ established" — never guess to fill the table.
 ## Contradictions
 
 <!--
-Where sources disagree, with both cited. Do not resolve them silently — the
+Where sources disagree, with both cited. Do not resolve them silently; the
 disagreement is itself a finding, and often the most useful one.
 -->
 
@@ -86,7 +86,7 @@ Say which evidence carries it, and what would change your mind.
 
 <!-- Every source consulted, including the ones that turned out useless. -->
 
-1. [<title>](url) — <what it is, and how far to trust it>
+1. [<title>](url): <what it is, and how far to trust it>
 
 ---
 

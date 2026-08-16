@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# create-bucket.sh — create this project's Cloudflare R2 bucket with wrangler.
+# create-bucket.sh: create this project's Cloudflare R2 bucket with wrangler.
 #
 # Cloud storage is assumed to be Cloudflare R2. By default the bucket is named
 # after the repository, so a freshly cloned project can provision its bucket

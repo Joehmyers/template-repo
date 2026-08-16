@@ -1,6 +1,6 @@
 ---
 status: "proposed"          # proposed | accepted | rejected | deprecated | superseded by D-NNNN
-date: 2026-01-01            # YYYY-MM-DD — date of the last status change
+date: 2026-01-01            # YYYY-MM-DD, date of the last status change
 decider: []                 # who decided, e.g. [alice, bob]
 tags: []                    # freeform labels for filtering, e.g. [database, persistence]
 supersedes: []              # records this one replaces, e.g. [D-0007]
@@ -13,7 +13,7 @@ superseded: null            # record that replaces this one, once it exists
 
 <!--
 What problem are we solving, and why now? State it in a few sentences. This is
-the most important part of the record — write it for a future reader who will
+the most important part of the record. Write it for a future reader who will
 not remember the discussion.
 -->
 

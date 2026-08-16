@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# setup.sh — bring a fresh clone to the point where ops/check.sh can run.
+# setup.sh: bring a fresh clone to the point where ops/check.sh can run.
 #
 # A cloud or web agent session starts from a bare clone with no dependencies
 # installed, so it cannot run your tests and has to guess whether a change
@@ -39,7 +39,7 @@ done
 
 if [[ -z "$SETUP_INSTALL" ]]; then
   (( auto )) && exit 0
-  echo "Nothing to do — set SETUP_INSTALL in ops/setup.sh to your install command."
+  echo "Nothing to do. Set SETUP_INSTALL in ops/setup.sh to your install command."
   exit 0
 fi
 
