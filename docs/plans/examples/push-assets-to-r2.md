@@ -9,8 +9,9 @@ anything created locally stays local. Add the symmetric push side: a `./assets/`
 convention for created assets, an `ops/push-assets.sh` script that syncs it to the R2 bucket,
 and a Claude Code `Stop` hook that runs the script automatically at the end of every agent
 turn, so created assets land in R2 by default and are accessible from any machine. The hook
-runs the script in `--auto` mode, which exits silently when R2 is not configured, the AWS CLI
-is missing, or there is nothing to push, so fresh clones of the template are unaffected.
+runs the script in `--auto` mode, which exits silently when R2 is not configured or there is
+nothing to push, so fresh clones of the template are unaffected; when R2 is configured but the
+upload cannot happen, it fails loudly instead of losing assets silently.
 
 ## Steps
 
@@ -20,12 +21,12 @@ is missing, or there is nothing to push, so fresh clones of the template are una
        `assets`, override via arg or `R2_ASSETS_PREFIX`). Never passes `--delete`. Supports
        `--auto` (graceful no-op used by the hook).
 - [x] 2. Register a `Stop` hook in `.claude/settings.json` running
-       `"$CLAUDE_PROJECT_DIR"/ops/push-assets.sh --auto` (explicit 120s timeout).
+       `"$CLAUDE_PROJECT_DIR"/ops/push-assets.sh --auto` (explicit timeout; 300 s today).
 - [x] 2b. Harden for auto-run via hook (from adversarial review): parse `.env` for the
        expected keys instead of sourcing it (no arbitrary code execution, no leaking
        unrelated secrets into the `aws` process, env vars genuinely take precedence);
-       `--no-follow-symlinks` and exclude `.env*` / `*.pem` / `*.key` so secrets can't be
-       auto-exfiltrated; anchor a relative `ASSETS_DIR` to the repo root (hook cwd is not
+       `--no-follow-symlinks` and exclude secret-looking files (`.env*`, `*.pem`, `*.key`,
+       `id_rsa*`, `secrets/`) so secrets can't be auto-exfiltrated; anchor a relative `ASSETS_DIR` to the repo root (hook cwd is not
        guaranteed); never exit 2 from the hook path (exit 2 from `aws s3 sync` would block
        the session from stopping); fail fast in `--auto` mode (`AWS_MAX_ATTEMPTS=2`,
        `--cli-connect-timeout 5`) so a degraded network can't stall every turn.

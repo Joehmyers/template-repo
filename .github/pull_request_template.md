@@ -27,7 +27,7 @@ ops/check.sh
 ## Checklist
 
 - [ ] `ops/check.sh` passes locally
-- [ ] Prose follows [`docs/style-guide.md`](/docs/style-guide.md)
+- [ ] Prose follows `docs/style-guide.md`
 - [ ] No `.env`, secrets, or build artifacts committed
 - [ ] Any architecturally significant choice is recorded in `docs/decisions/`,
       and no `accepted` decision is silently contradicted

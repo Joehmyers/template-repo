@@ -84,7 +84,7 @@ phrasing is correct.
 
 Also: define every term of art on first use, use one name per concept, prefer
 numbers to adjectives ("cuts p95 from 800 ms to 120 ms", not "significantly
-faster"), and never use an em dash (—); use a comma, a colon, parentheses, or
+faster"), spell in British English, and never use an em dash (—); use a comma, a colon, parentheses, or
 two sentences instead.
 
 The same rules live in `.claude/rules/writing.md`, which Claude Code loads when
@@ -158,9 +158,8 @@ proposing a change to any of these.
   Without R2 credentials in `.env` the hook is a silent no-op, so a fresh clone needs no configuration.
   Symlinks and secret-looking files (`.env*`, `*.pem`, `*.key`, `id_rsa*`, `secrets/`) are never uploaded.
 - Reading `.env` (and its variants), `*.pem`, `*.key`, `id_rsa*` and `secrets/`
-  is blocked by deny rules in `.claude/settings.json`; `.env.example` stays
-  readable on purpose. That is enforcement, not advice; do not work around it.
-  If a task genuinely needs a secret, ask for it.
+  is blocked by deny rules in `.claude/settings.json`. That is enforcement, not
+  advice; do not work around it. If a task genuinely needs a secret, ask for it.
 
 ---
 

@@ -68,8 +68,9 @@ Undefined terms are where readers get lost and where teams silently disagree.
   "somewhat", "arguably". If you are genuinely unsure, say what you are
   unsure about: "untested above 10k rows".
 - **One spelling convention.** This repository uses British English
-  (*behaviour*, *summarise*). Quoted text and the `LICENSE` file keep their
-  original spelling.
+  (*behaviour*, *summarise*). Quoted text, established technical terms
+  (a build *artifact*), and the `LICENSE` file keep their conventional
+  spelling.
 - **Write for the reader who wasn't there.** No unexplained abbreviations,
   no references to conversations or context the reader can't see.
 

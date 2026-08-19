@@ -27,24 +27,35 @@ OPS_DOTENV_KEYS=(
 
 # Load the keys above from a .env file at the repo root, if present.
 #
-# The file is parsed line by line as KEY=VALUE (an `export ` prefix and single
-# or double quotes around the value are accepted), never sourced: some scripts
-# run automatically via hooks, and sourcing would execute arbitrary shell from
-# a gitignored file. Values already set in the environment take precedence
-# over the file.
+# The file is parsed line by line as KEY=VALUE (an `export ` prefix, quotes
+# around the value, and an inline ` # comment` after an unquoted value are
+# accepted), never sourced: some scripts run automatically via hooks, and
+# sourcing would execute arbitrary shell from a gitignored file. A key already
+# set in the environment (even to an empty value) wins over the file; within
+# the file, the last line for a key wins, as it would under `source`.
 load_dotenv() {
-  local root keys_re line key value
+  local root keys_re preset=" " line key value
   root="$(ops_repo_root)"
   [[ -f "$root/.env" ]] || return 0
   keys_re="$(IFS='|'; printf '%s' "${OPS_DOTENV_KEYS[*]}")"
+  for key in "${OPS_DOTENV_KEYS[@]}"; do
+    [[ -n "${!key+set}" ]] && preset+="$key "
+  done
   while IFS= read -r line; do
     key="${line%%=*}"
     value="${line#*=}"
+    # Trim surrounding whitespace, take a quoted value up to its closing
+    # quote, and drop an inline comment from an unquoted one: the values
+    # `source` would have produced for the .env.example format.
+    value="${value#"${value%%[![:space:]]*}"}"
+    value="${value%"${value##*[![:space:]]}"}"
     case "$value" in
-      \"*\") value="${value%\"}"; value="${value#\"}" ;;
-      \'*\') value="${value%\'}"; value="${value#\'}" ;;
+      \"*\"*) value="${value#\"}"; value="${value%%\"*}" ;;
+      \'*\'*) value="${value#\'}"; value="${value%%\'*}" ;;
+      *" #"*) value="${value%% #*}"
+              value="${value%"${value##*[![:space:]]}"}" ;;
     esac
-    if [[ -z "${!key:-}" ]]; then
+    if [[ "$preset" != *" $key "* ]]; then
       printf -v "$key" '%s' "$value"
       # shellcheck disable=SC2163
       export "$key"

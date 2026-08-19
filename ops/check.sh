@@ -9,8 +9,10 @@
 # Usage:
 #   ops/check.sh            Run every configured step; skip the unconfigured ones.
 #   ops/check.sh --strict   Also fail when a project step (lint, test, build)
-#                           is still unconfigured. A missing optional tool
-#                           (shellcheck) is reported but never fails the run.
+#                           is still unconfigured, or when a warning fired
+#                           (like a wrangler.jsonc bucket-name mismatch). A
+#                           missing optional tool (shellcheck) is reported but
+#                           never fails the run.
 #
 # Configure the three commands in the block below, one line each. An empty
 # value means "not configured yet", and the step is skipped with a note.
@@ -53,6 +55,7 @@ done
 failed=()
 skipped=()
 missing_tools=()
+warned=()
 
 # Run one named step whose command is a string (the user-configured project
 # steps above). Prints its output, records the outcome, never exits early, so
@@ -107,7 +110,7 @@ done < <(git ls-files --cached --others --exclude-standard '*.sh' 2>/dev/null \
 check_shell_syntax() {
   local script status=0
   for script in "${shell_scripts[@]}"; do
-    bash -n "$script" || status=1
+    bash -n -- "$script" || status=1
   done
   return "$status"
 }
@@ -117,7 +120,7 @@ if (( ${#shell_scripts[@]} )); then
     check_shell_syntax
   if command -v shellcheck >/dev/null 2>&1; then
     run_step_argv "shellcheck" "shellcheck, ${#shell_scripts[@]} scripts" \
-      shellcheck "${shell_scripts[@]}"
+      shellcheck -- "${shell_scripts[@]}"
   else
     echo "SKIP  shellcheck: not installed (https://www.shellcheck.net/)"
     missing_tools+=("shellcheck")
@@ -127,23 +130,31 @@ fi
 # The ops/ scripts derive the R2 bucket name from the repository name
 # (ops/lib.sh; docs/decisions/D-0001-*.md), while wrangler.jsonc hardcodes the
 # same name for the Worker binding. After a repository rename the two drift
-# apart silently, so fail when the name the scripts would use no longer
-# appears in wrangler.jsonc.
-check_r2_config() {
-  local expected="$1" names
-  names="$(sed -nE 's/.*"bucket_name"[[:space:]]*:[[:space:]]*"([^"]*)".*/\1/p' wrangler.jsonc)"
-  if ! grep -qxF "$expected" <<< "$names"; then
-    echo "wrangler.jsonc binds bucket '${names//$'\n'/, }'; the ops/ scripts use '${expected}'." >&2
-    echo "Update bucket_name (and name) in wrangler.jsonc, or set R2_BUCKET to match it." >&2
-    return 1
-  fi
+# apart silently, so warn when the name the scripts would use is not bound in
+# wrangler.jsonc. A warning, not a failure: a freshly renamed clone must stay
+# green on day one. --strict turns it into a failure.
+strip_wrangler_comments() {
+  # Full-line // comments only; /* */ blocks are not handled, so keep any
+  # commented-out bucket_name on its own // line.
+  sed -E 's@^[[:space:]]*//.*$@@' wrangler.jsonc
 }
 
-if [[ -f wrangler.jsonc ]] && grep -q '"bucket_name"' wrangler.jsonc; then
-  load_dotenv   # R2_BUCKET in .env overrides the repository-name default
-  expected_bucket="$(r2_bucket_name)"
-  run_step_argv "r2-config" "wrangler.jsonc bucket_name = ${expected_bucket}" \
-    check_r2_config "$expected_bucket"
+if [[ -f wrangler.jsonc ]] && strip_wrangler_comments | grep -q '"bucket_name"'; then
+  # Resolve the expected bucket inside the substitution's subshell:
+  # load_dotenv exports R2 credentials, which must never reach the project
+  # steps below. R2_BUCKET in .env overrides the repository-name default.
+  expected_bucket="$(load_dotenv; r2_bucket_name)"
+  bound_buckets="$(strip_wrangler_comments \
+    | grep -oE '"bucket_name"[[:space:]]*:[[:space:]]*"[^"]*"' \
+    | sed -E 's/.*"([^"]*)"$/\1/')"
+  if grep -qxF "$expected_bucket" <<< "$bound_buckets"; then
+    echo "PASS  r2-config: wrangler.jsonc binds bucket '${expected_bucket}'"
+  else
+    echo "WARN  r2-config: wrangler.jsonc binds bucket '${bound_buckets//$'\n'/, }';" >&2
+    echo "      the ops/ scripts use '${expected_bucket}'. Update bucket_name (and" >&2
+    echo "      name) in wrangler.jsonc, or set R2_BUCKET to match it." >&2
+    warned+=("r2-config")
+  fi
 fi
 
 # --- Project checks --------------------------------------------------------
@@ -166,14 +177,22 @@ if (( ${#failed[@]} )); then
   exit 1
 fi
 
-if (( strict )) && (( ${#skipped[@]} )); then
-  echo "FAILED: --strict, and these steps are not configured: ${skipped[*]}" >&2
-  exit 1
+if (( strict )); then
+  strict_fail=""
+  (( ${#skipped[@]} )) && strict_fail+=" steps not configured: ${skipped[*]}."
+  (( ${#warned[@]} )) && strict_fail+=" warnings: ${warned[*]}."
+  if [[ -n "$strict_fail" ]]; then
+    echo "FAILED: --strict, and:${strict_fail}" >&2
+    exit 1
+  fi
 fi
 
 verdict="OK"
 if (( ${#skipped[@]} )); then
   verdict+=" (skipped: ${skipped[*]})"
+fi
+if (( ${#warned[@]} )); then
+  verdict+=" (warnings: ${warned[*]})"
 fi
 if (( ${#missing_tools[@]} )); then
   verdict+=" (missing tools: ${missing_tools[*]})"
