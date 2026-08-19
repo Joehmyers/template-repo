@@ -158,8 +158,9 @@ proposing a change to any of these.
   Without R2 credentials in `.env` the hook is a silent no-op, so a fresh clone needs no configuration.
   Symlinks and secret-looking files (`.env*`, `*.pem`, `*.key`, `id_rsa*`, `secrets/`) are never uploaded.
 - Reading `.env` (and its variants), `*.pem`, `*.key`, `id_rsa*` and `secrets/`
-  is blocked by deny rules in `.claude/settings.json`. That is enforcement, not
-  advice; do not work around it. If a task genuinely needs a secret, ask for it.
+  is blocked by deny rules in `.claude/settings.json`; `.env.example` stays
+  readable on purpose. That is enforcement, not advice; do not work around it.
+  If a task genuinely needs a secret, ask for it.
 
 ---
 
