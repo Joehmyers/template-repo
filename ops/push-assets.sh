@@ -6,9 +6,12 @@
 # Usage:
 #   ops/push-assets.sh [--auto] [prefix]
 #
-#   --auto   Hook mode: exit 0 silently when R2 is unconfigured, the AWS CLI
-#            is missing, or there is nothing to push. Used by the Stop hook
-#            in .claude/settings.json so a fresh clone never errors.
+#   --auto   Hook mode: exit 0 silently when R2 is unconfigured or there is
+#            nothing to push. Used by the Stop hook in .claude/settings.json
+#            so a fresh clone never errors. When R2 IS configured and the
+#            upload cannot happen (AWS CLI missing, sync failure), it prints
+#            one line to stderr and exits 1: losing assets silently is worse
+#            than a noisy hook.
 #   prefix   Optional path within the bucket to upload to
 #            (overrides R2_ASSETS_PREFIX; default: assets).
 #
@@ -16,19 +19,23 @@
 #   R2_ACCOUNT_ID          Cloudflare account ID (the hex ID in your R2 endpoint URL)
 #   R2_ACCESS_KEY_ID       R2 API token access key ID
 #   R2_SECRET_ACCESS_KEY   R2 API token secret
-#   R2_BUCKET              Bucket name
+#   R2_BUCKET              Bucket name (default: the repository name)
 #   R2_ASSETS_PREFIX       Optional path within the bucket to upload to (default: assets)
 #   ASSETS_DIR             Local directory of created assets (default: ./assets;
 #                          relative paths resolve against the repo root)
 #
 # Uploads new and changed files only; never deletes remote objects. Symlinks
-# and secret-looking files (.env*, *.pem, *.key) are never uploaded.
+# and secret-looking files (.env*, *.pem, *.key, id_rsa*, secrets/) are never
+# uploaded.
 # Retrieve assets elsewhere with: ops/fetch-data.sh assets (lands in ./data/assets)
 #
 # Requires the AWS CLI (R2 is S3-compatible): https://developers.cloudflare.com/r2/api/s3/
 set -euo pipefail
 
-repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# shellcheck source=ops/lib.sh
+source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
+
+repo_root="$(ops_repo_root)"
 
 auto=0
 prefix_set=0
@@ -50,35 +57,34 @@ for arg in "$@"; do
   esac
 done
 
-# Load the keys we need from .env if present. Parsed, not sourced: this script
-# runs automatically via a Stop hook, and sourcing would execute arbitrary
-# shell from a gitignored file (and export unrelated secrets to the aws
-# process). Values already in the environment take precedence.
-if [[ -f "$repo_root/.env" ]]; then
-  while IFS= read -r line; do
-    key="${line%%=*}"
-    value="${line#*=}"
-    case "$value" in
-      \"*\") value="${value%\"}"; value="${value#\"}" ;;
-      \'*\') value="${value%\'}"; value="${value#\'}" ;;
-    esac
-    [[ -n "${!key:-}" ]] || printf -v "$key" '%s' "$value"
-  done < <(grep -E '^(export[[:space:]]+)?(R2_ACCOUNT_ID|R2_ACCESS_KEY_ID|R2_SECRET_ACCESS_KEY|R2_BUCKET|R2_ASSETS_PREFIX|ASSETS_DIR)=' "$repo_root/.env" 2>/dev/null | sed -E 's/^export[[:space:]]+//' || true)
-fi
+# Load the R2 keys from .env if present. load_dotenv (ops/lib.sh) parses the
+# file rather than sourcing it: this script runs automatically via a Stop
+# hook, and sourcing would execute arbitrary shell from a gitignored file.
+# Values already in the environment take precedence.
+load_dotenv
 
 missing=()
-for var in R2_ACCOUNT_ID R2_ACCESS_KEY_ID R2_SECRET_ACCESS_KEY R2_BUCKET; do
+for var in R2_ACCOUNT_ID R2_ACCESS_KEY_ID R2_SECRET_ACCESS_KEY; do
   [[ -n "${!var:-}" ]] || missing+=("$var")
 done
 if (( ${#missing[@]} )); then
+  # No R2 credentials means this clone does not use cloud storage; the hook
+  # stays silent so a fresh clone needs no configuration.
   (( auto )) && exit 0
   echo "error: missing required configuration: ${missing[*]}" >&2
   echo "Set them in the environment or in $repo_root/.env (see .env.example)." >&2
   exit 1
 fi
 
+# The bucket defaults to the repository name, the same rule every other ops/
+# script uses (see docs/decisions/D-0001-*.md).
+R2_BUCKET="$(r2_bucket_name)"
+
 if ! command -v aws >/dev/null 2>&1; then
-  (( auto )) && exit 0
+  if (( auto )); then
+    echo "push-assets: R2 is configured but the AWS CLI is not installed; assets were NOT uploaded." >&2
+    exit 1
+  fi
   echo "error: the AWS CLI is required but not installed." >&2
   echo "Install it: https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html" >&2
   exit 1
@@ -110,11 +116,15 @@ export AWS_DEFAULT_REGION="auto"
 export AWS_REQUEST_CHECKSUM_CALCULATION="when_required"
 export AWS_RESPONSE_CHECKSUM_VALIDATION="when_required"
 
+# The excludes below are the same secret boundary as the permissions deny
+# list in .claude/settings.json; keep the two lists in step.
 sync_cmd=(aws s3 sync "$assets_dir" "$dest_url"
   --endpoint-url "https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
   --no-follow-symlinks
   --exclude ".env*" --exclude "*/.env*"
-  --exclude "*.pem" --exclude "*.key")
+  --exclude "*.pem" --exclude "*.key"
+  --exclude "id_rsa*" --exclude "*/id_rsa*"
+  --exclude "secrets/*" --exclude "*/secrets/*")
 
 if (( auto )); then
   # Hook mode: fail fast on a bad network/endpoint instead of stalling the

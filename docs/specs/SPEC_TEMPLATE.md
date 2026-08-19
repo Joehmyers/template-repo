@@ -30,7 +30,7 @@
 
 ## Acceptance criteria
 
-- [ ] <!-- Observable behavior that proves the feature works. -->
+- [ ] <!-- Observable behaviour that proves the feature works. -->
 - [ ] ...
 
 ## End-to-end verification

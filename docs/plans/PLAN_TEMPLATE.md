@@ -6,14 +6,14 @@ Spec: [docs/specs/\<feature\>/spec.md](../specs/<feature>/spec.md) _(if applicab
 
 ## Overview
 
-<!-- One paragraph summarizing the implementation approach. -->
+<!-- One paragraph summarising the implementation approach. -->
 
 ## Steps
 
 - [ ] 1. <!-- Concrete action: file to create/edit, function to add/change -->
 - [ ] 2. ...
 - [ ] 3. Write / update tests for the above
-- [ ] 4. Run test suite; fix any failures
+- [ ] 4. Run `ops/check.sh`; fix any failures
 - [ ] 5. Commit: `<imperative commit message>`
 
 ## Files changed
@@ -25,12 +25,11 @@ Spec: [docs/specs/\<feature\>/spec.md](../specs/<feature>/spec.md) _(if applicab
 
 ## Verification
 
-<!-- Command(s) to run to confirm the feature works end-to-end. -->
+<!-- ops/check.sh is the baseline; add any feature-specific end-to-end command. -->
 
 ```bash
-# e.g.
-# npm test
-# ./ops/smoke-test.sh
+ops/check.sh
+# e.g. plus: curl localhost:8080/health
 ```
 
 ---

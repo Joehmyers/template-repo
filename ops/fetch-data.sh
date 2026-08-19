@@ -50,7 +50,15 @@ if ! command -v aws >/dev/null 2>&1; then
 fi
 
 prefix="${1:-${R2_PREFIX:-}}"
-prefix="${prefix#/}"
+while [[ "$prefix" == /* ]]; do prefix="${prefix#/}"; done
+# The prefix names a path inside the bucket and the matching directory under
+# DATA_DIR; a `..` segment would let a sync write outside DATA_DIR.
+case "/${prefix}/" in
+  *"/../"*)
+    echo "error: prefix must not contain '..' (got '${prefix}')." >&2
+    exit 1
+    ;;
+esac
 data_dir="${DATA_DIR:-$repo_root/data}"
 
 source_url="s3://${R2_BUCKET}"
