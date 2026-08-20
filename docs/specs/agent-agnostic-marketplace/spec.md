@@ -66,7 +66,7 @@ new platform would mean another hand-maintained copy.
 | `adapters/openai/` | New: `build.py`, example assistant config, README |
 | `plugins/`, `.claude-plugin/` | Now generated output, still committed |
 | `.github/workflows/validate-plugins.yml` | Adds a drift job: rebuild and fail on diff, plus hook smoke tests |
-| `scripts/test-hook-scripts.sh` | New: 14 behavioral tests for hook scripts and the Claude shim |
+| `scripts/test-hook-scripts.sh` | New: 14 behavioural tests for hook scripts and the Claude shim |
 
 ## Acceptance criteria
 

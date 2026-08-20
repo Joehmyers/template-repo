@@ -75,7 +75,7 @@ one adapter per target platform.
 - **Benefits:** the Claude output is byte-for-byte reproducible from the
   neutral sources, so the migration itself was verifiable (the generated tree
   matched the previous hand-maintained one exactly, hooks excepted, and those
-  were covered by 14 behavioral tests).
+  were covered by 14 behavioural tests).
 - **Costs:** contributors must run the Claude adapter after editing and commit
   generated output alongside sources; CI enforces this, but it is one more
   step.
