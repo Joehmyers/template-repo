@@ -84,7 +84,7 @@ phrasing is correct.
 
 Also: define every term of art on first use, use one name per concept, prefer
 numbers to adjectives ("cuts p95 from 800 ms to 120 ms", not "significantly
-faster"), and never use an em dash (—); use a comma, a colon, parentheses, or
+faster"), spell in British English, and never use an em dash (—); use a comma, a colon, parentheses, or
 two sentences instead.
 
 The same rules live in `.claude/rules/writing.md`, which Claude Code loads when
@@ -102,6 +102,7 @@ all: commit messages, PR descriptions, error strings.
 - NEVER mock a module that exists in this repo; test it directly.
 - Every test asserts a concrete outcome. A test that cannot fail is not a test.
 - Write the test before the implementation when the file does not exist yet.
+- Run `ops/check.sh` after every implementation change to catch regressions.
 
 The same rules live in `.claude/rules/testing.md`, which Claude Code loads only
 when you touch a test file. They are repeated here so tools without path-scoped
@@ -128,7 +129,7 @@ active "what". `docs/decisions/README.md` owns the format and workflow; the
 rules below are repeated here so agents see them without opening it.
 
 - **Before proposing an architectural change, consult `docs/decisions/README.md`
-  and read any relevant record.** Do not contradict an `Accepted` decision.
+  and read any relevant record.** Do not contradict an `accepted` decision.
 - If a decision genuinely needs to change, ask a human first, then write a
   **new** record that supersedes the old one (copy `docs/decisions/template.md`).
   Never rewrite an accepted record.
@@ -155,10 +156,11 @@ proposing a change to any of these.
   A `Stop` hook in `.claude/settings.json` uploads them to Cloudflare R2 after each agent turn,
   so they are accessible from anywhere; retrieve them with `ops/fetch-data.sh assets`.
   Without R2 credentials in `.env` the hook is a silent no-op, so a fresh clone needs no configuration.
-  Symlinks and secret-looking files (`.env*`, `*.pem`, `*.key`) are never uploaded.
-- Reading `.env`, `*.pem`, `*.key` and `secrets/` is blocked by a deny rule in
-  `.claude/settings.json`. That is enforcement, not advice; do not work around
-  it. If a task genuinely needs a secret, ask for it.
+  Symlinks and secret-looking files (`.env*`, `*.pem`, `*.key`, `id_rsa*`, `secrets/`) are never uploaded.
+- Reading `.env` (and its variants), `*.pem`, `*.key`, `id_rsa*` and `secrets/`
+  is blocked by deny rules in `.claude/settings.json`; `.env.example` stays
+  readable on purpose. That is enforcement, not advice; do not work around it.
+  If a task genuinely needs a secret, ask for it.
 
 ---
 
@@ -188,5 +190,6 @@ read it for the level of detail a plan should reach.
 ## Personal overrides
 
 Add your personal notes, local commands, and machine-specific settings to
-`AGENTS.local.md` (gitignored). They are auto-loaded alongside this file.
-Claude Code users can equivalently use `CLAUDE.local.md`.
+`AGENTS.local.md` (gitignored). Tools that support local override files pick
+it up; Claude Code does not, and instead auto-loads `CLAUDE.local.md`, so put
+overrides there (or make it one line: `@AGENTS.local.md`).

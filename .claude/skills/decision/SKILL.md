@@ -19,7 +19,7 @@ change it back.
    already covered by a linter or convention, say so and write nothing. A log
    full of small decisions hides the load-bearing ones.
 2. **Read `docs/decisions/README.md`** and the most recent records, so the new
-   one is consistent and does not silently contradict an `Accepted` decision.
+   one is consistent and does not silently contradict an `accepted` decision.
 3. **Follow the README's "Writing a new decision" steps.** The README owns the
    mechanics (template, `D-NNNN` numbering, index row, supersession, pull
    request), so they are stated once and cannot drift.

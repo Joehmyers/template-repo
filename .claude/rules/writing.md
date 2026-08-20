@@ -59,6 +59,9 @@ phrasing is correct.
   faster".
 - No hedging filler: delete "basically", "essentially", "arguably". If you are
   genuinely unsure, say what you are unsure about: "untested above 10k rows".
+- **British English spelling** (*behaviour*, *summarise*). Quoted text and
+  established technical terms (a build *artifact*) keep their conventional
+  spelling.
 - **No em dashes (—).** Use a comma, a colon, parentheses, or two sentences.
   An en dash is not a fix; hyphens in compound words are fine.
 
