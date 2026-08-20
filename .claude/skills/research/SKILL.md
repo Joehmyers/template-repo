@@ -22,7 +22,7 @@ what the sources support, what they do not, and what is still unknown.
    a wrong question wastes the whole run.
 
 2. **Check what is already decided.** Read `docs/decisions/README.md` and any
-   relevant record. If an `Accepted` decision already settles this, say so and
+   relevant record. If an `accepted` decision already settles this, say so and
    stop; the question is whether to supersede it, which is a different job
    (`/decision`).
    Also check `docs/research/`; this may already have been researched.

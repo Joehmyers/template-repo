@@ -31,17 +31,18 @@ So one explains the past while the other governs the future.
 
 - Before proposing any deep change to this project you must **read this index and any relevant
   record.**
-- **You must not contradict an `Accepted` decision.** If it genuinely needs to change then you 
+- **You must not contradict an `accepted` decision.** If it genuinely needs to change then you 
   can supersede it by following the steps below but only after asking a human and never edit the accepted record.
 - When retrieving decisions always **filter on `status`** so superseded/deprecated
-  records never outrank the current one.
+  records never outrank the current one. The frontmatter values are lowercase
+  (`accepted`, `superseded by D-NNNN`; see [`template.md`](template.md)).
 
 ## Index
 
 | ID | Title | Status | Date |
 |----|-------|--------|------|
-| [D-0001](D-0001-use-cloudflare-r2-for-project-storage.md) | Use Cloudflare R2 for project storage | Accepted | 2026-08-04 |
-| [D-0002](D-0002-platform-neutral-skill-format-for-agent-marketplaces.md) | Platform-neutral skill format for agent marketplaces | Accepted | 2026-08-19 |
+| [D-0001](D-0001-use-cloudflare-r2-for-project-storage.md) | Use Cloudflare R2 for project storage | accepted | 2026-08-04 |
+| [D-0002](D-0002-platform-neutral-skill-format-for-agent-marketplaces.md) | Platform-neutral skill format for agent marketplaces | accepted | 2026-08-19 |
 
 <!-- Add a row for every new record. Keep it sorted by number. -->
 

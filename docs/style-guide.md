@@ -67,6 +67,10 @@ Undefined terms are where readers get lost and where teams silently disagree.
 - **No hedging filler.** Delete "basically", "essentially", "quite",
   "somewhat", "arguably". If you are genuinely unsure, say what you are
   unsure about: "untested above 10k rows".
+- **One spelling convention.** This repository uses British English
+  (*behaviour*, *summarise*). Quoted text, established technical terms
+  (a build *artifact*), and the `LICENSE` file keep their conventional
+  spelling.
 - **Write for the reader who wasn't there.** No unexplained abbreviations,
   no references to conversations or context the reader can't see.
 
@@ -124,6 +128,6 @@ Before committing anything written, ask:
 - [ ] Could a competent outsider follow it on the first read?
 - [ ] Is every term of art defined on first use, and used consistently?
 - [ ] Is every sentence active, and as short as it can be?
-- [ ] Is every claim concrete (a number, a behavior, a file), not an adjective?
+- [ ] Is every claim concrete (a number, a behaviour, a file), not an adjective?
 - [ ] Are there zero em dashes?
 - [ ] Is there a single word or phrase you could cut? Cut it.

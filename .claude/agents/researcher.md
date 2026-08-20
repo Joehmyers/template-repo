@@ -48,7 +48,7 @@ found in the repository itself, and stop.
 <the question you were given, restated in one line>
 
 ## Answer
-<2–5 sentences. The direct answer, or "not established by the sources" and why.>
+<2 to 5 sentences. The direct answer, or "not established by the sources" and why.>
 
 ## Evidence
 - <claim> (<source URL or path:line>, <date if known>)

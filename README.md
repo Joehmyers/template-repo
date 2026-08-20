@@ -28,7 +28,7 @@ my-project/
 │   │   ├── spec/             # /spec: write a feature spec
 │   │   ├── plan/             # /plan: write an implementation plan
 │   │   └── decision/         # /decision: record an architecture decision
-│   └── agents/               # Specialized subagent definitions
+│   └── agents/               # Specialised subagent definitions
 │       ├── researcher.md     # Investigates one question in its own context
 │       └── code-reviewer.md  # Adversarial, read-only diff reviewer
 ├── .github/
