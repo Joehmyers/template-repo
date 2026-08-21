@@ -42,6 +42,7 @@ So one explains the past while the other governs the future.
 | ID | Title | Status | Date |
 |----|-------|--------|------|
 | [D-0001](D-0001-use-cloudflare-r2-for-project-storage.md) | Use Cloudflare R2 for project storage | accepted | 2026-08-04 |
+| [D-0002](D-0002-platform-neutral-skill-format-for-agent-marketplaces.md) | Platform-neutral skill format for agent marketplaces | accepted | 2026-08-19 |
 
 <!-- Add a row for every new record. Keep it sorted by number. -->
 
