@@ -54,6 +54,7 @@ my-project/
 ├── wrangler.jsonc            # Cloudflare wrangler config: R2 bucket binding (bucket = repo name)
 ├── src/                      # Product source code
 ├── tests/                    # Test suite
+│   └── fixtures/             # Files tests read as input or compare against (README inside)
 └── ops/                      # Verification, infrastructure, deployment
     ├── check.sh              # THE verification command: lint, tests, build
     ├── setup.sh              # Install dependencies (runs on session start)
@@ -75,7 +76,8 @@ my-project/
 3. **Edit `AGENTS.md`**: fill in the remaining `<fill-in>` sections (how to run
    the project locally, code style). `CLAUDE.md` just imports it, so there is
    nothing to edit there.
-4. **Add your source code** to `src/` and tests to `tests/`.
+4. **Add your source code** to `src/`, tests to `tests/`, and the files those
+   tests read to `tests/fixtures/`.
 5. **Cloud storage (optional)**: storage is assumed to be [Cloudflare R2](https://developers.cloudflare.com/r2/),
    and the bucket is named after the repository
    ([D-0001](docs/decisions/D-0001-use-cloudflare-r2-for-project-storage.md)).
