@@ -43,6 +43,8 @@ read means the answer to "is this green?" cannot drift between them.
 
 - `src/`: product source code
 - `tests/`: test suite (the agent's verification target)
+- `tests/fixtures/`: files tests read as input or compare output against;
+  its README has the size and naming rules
 - `docs/research/`: sourced findings behind a decision (the evidence)
 - `docs/specs/`: feature specs (what/why)
 - `docs/plans/`: implementation plans (how/steps)
