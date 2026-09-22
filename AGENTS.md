@@ -53,7 +53,7 @@ read means the answer to "is this green?" cannot drift between them.
 - `ops/`: infrastructure, verification, and deployment scripts
 - `.claude/`: Claude Code configuration (committed to git): `skills/` (workflows,
   also usable as `/name`), `agents/` (subagents), `rules/` (path-scoped instructions),
-  `settings.json` (permissions and hooks)
+  `settings.json` (permissions, hooks and installed plugins)
 - `.github/`: CI workflow and pull request template
 
 ---
@@ -149,6 +149,9 @@ proposing a change to any of these.
 - **Cloud storage is Cloudflare R2**, bucket named after the repository (override
   with `R2_BUCKET`). Lifecycle via wrangler, bulk transfer via the S3-compatible
   API. See [D-0001](docs/decisions/D-0001-use-cloudflare-r2-for-project-storage.md).
+- **Deep research ships as a plugin**, `deep-research@claude-community`, installed
+  at project scope, with agent teams enabled in `.claude/settings.json`. See
+  [D-0003](docs/decisions/D-0003-ship-deep-research-as-a-project-scoped-plugin.md).
 
 ---
 
@@ -179,7 +182,10 @@ For larger features, start with a spec in `docs/specs/<feature>/spec.md` first
 
 When the choice needs evidence rather than recall (which library, which
 protocol, what the prior art is), run `/research <question>` first. It fans out
-subagents over real sources and writes cited findings to `docs/research/`.
+subagents over real sources and writes cited findings to `docs/research/`. For
+a question worth a bigger spend, `/deep-research:research --mode=web "<topic>"`
+runs a team of separate Claude sessions and writes a dated report to the same
+folder; the README says when each one fits.
 
 When a change makes an architecturally significant decision, record it in
 `docs/decisions/` (`/decision <title>`). Cite the research document in it.

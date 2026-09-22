@@ -43,6 +43,7 @@ So one explains the past while the other governs the future.
 |----|-------|--------|------|
 | [D-0001](D-0001-use-cloudflare-r2-for-project-storage.md) | Use Cloudflare R2 for project storage | accepted | 2026-08-04 |
 | [D-0002](D-0002-platform-neutral-skill-format-for-agent-marketplaces.md) | Platform-neutral skill format for agent marketplaces | accepted | 2026-08-19 |
+| [D-0003](D-0003-ship-deep-research-as-a-project-scoped-plugin.md) | Ship deep research as a project-scoped plugin | accepted | 2026-09-22 |
 
 <!-- Add a row for every new record. Keep it sorted by number. -->
 
