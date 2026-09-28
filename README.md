@@ -18,7 +18,7 @@ my-project/
 ├── .gitignore
 ├── .editorconfig             # Indentation and line endings, for every editor
 ├── .claude/
-│   ├── settings.json         # Team permissions and hooks (committed)
+│   ├── settings.json         # Team permissions, hooks and plugins (committed)
 │   ├── settings.local.json   # Personal overrides (gitignored)
 │   ├── rules/                # Path-scoped instructions, loaded on matching files
 │   │   ├── writing.md        # Orwell's rules; loads when touching any Markdown
@@ -38,7 +38,8 @@ my-project/
 ├── LICENSE                   # MIT; replace with your own terms
 ├── docs/
 │   ├── research/             # Sourced findings behind a decision (the evidence)
-│   │   └── RESEARCH_TEMPLATE.md
+│   │   ├── RESEARCH_TEMPLATE.md
+│   │   └── archive/          # Working papers from deep-research plugin runs (created on first run)
 │   ├── specs/                # Feature specs: the "what/why"
 │   │   └── SPEC_TEMPLATE.md  # Copy this when writing a new spec
 │   ├── plans/                # Implementation plans: the "how"
@@ -167,6 +168,14 @@ decisions aren't silently contradicted.
 
 ## Deep research
 
+Two routes, and they are not the same thing. `/research` runs subagents inside
+this session and writes one findings document. The `deep-research` plugin runs a
+team of separate Claude sessions and writes a report plus the working papers
+behind it. Start with `/research`; reach for the plugin when the question is
+worth the extra tokens.
+
+### `/research`, the built-in skill
+
 ```bash
 /research "which Postgres-backed job queue survives 10k jobs/minute?"
 ```
@@ -193,6 +202,68 @@ The failure mode this exists to prevent is a model answering a library-choice
 question from memory, fluently and out of date. If the network is unavailable,
 the skill says so and marks the document partial rather than falling back on
 recall.
+
+### `deep-research`, the plugin
+
+Installed from the community marketplace at project scope, so it travels with
+the repo: `.claude/settings.json` names the marketplace, enables the plugin, and
+sets the one flag it needs. Clone the repo and you have it.
+
+```bash
+/deep-research:setup                                   # health check, safe to re-run (read the caveat below)
+/deep-research:research --mode=web "<topic>"
+/deep-research:research --mode=repo <path> [--compare <path>] [--deeper] [--deepest]
+/deep-research:research --mode=structured <spec-path> [subject-key]
+```
+
+A Haiku scout builds the source list, three to five Sonnet specialists read the
+sources and challenge each other, and an Opus agent checks coverage and writes
+the report. Output arrives as files, not chat messages:
+
+| Lands at | On |
+|----------|-----|
+| `docs/research/YYYY-MM-DD-<topic-slug>.md` | every run: the report |
+| `docs/research/archive/YYYY-MM-DD-<topic-slug>/` | every run: the working papers behind it |
+| `docs/research/YYYY-MM-DD-<topic-slug>-advisory.md` | when the Opus agent finds something outside the question you asked |
+| `docs/research/YYYY-MM-DD-<topic-slug>-gap-analysis.md` | `--mode=repo --compare` |
+| `docs/research/YYYY-MM-DD-<topic-slug>-{survey,file-index,system-map,connectivity-matrix,architecture-summary}.md` | `--mode=repo --deepest` |
+
+A fourth mode, media research through NotebookLM, ships inside the plugin but
+stays off: it needs a separate server and a Google account, which this template
+does not set up.
+
+`--mode=structured` is the exception: it writes schema-conforming data to the
+path its spec names, and archives the paper trail like the others. The date
+prefix is how you tell plugin output from the `docs/research/<topic>.md` that
+`/research` writes; both conventions share the folder.
+
+**It goes wide, not deep.** The pipeline scopes the question once, fans out, and
+synthesises. Web mode can add one targeted follow-up pass when the first sweep
+reports serious gaps, and stops at two; repo and structured modes do not loop at
+all. So when an answer changes the question, run the plugin again yourself, each
+pass narrowed to the gap the last one left.
+
+Three things to know before the first run:
+
+- **It needs agent teams**, an experimental Claude Code feature that ships off.
+  `.claude/settings.json` turns it on for this repo. While it is on, any subagent
+  Claude names starts as a teammate, so a team can form when you did not ask for
+  one. Setting the value to `"0"` turns that behaviour off and the plugin with
+  it.
+- **It costs tokens.** The plugin adds roughly 1,900 tokens to every session
+  before you run anything (`claude plugin details deep-research`), and each
+  teammate is a separate Claude session with its own context window.
+- **Version skew, in two places.** Plugin 1.3.1 still instructs `TeamCreate` and
+  `TeamDelete`, tools Claude Code removed in v2.1.178, where a teammate now
+  starts when Claude spawns a named subagent instead. Those steps fail and
+  Claude has to work around them. Separately, `/deep-research:setup` looks for
+  `commands/web.md`, `repo.md` and `structured.md`, which 1.3.1 replaced with a
+  single `research.md` plus `--mode`, so it reports all three pipelines missing
+  when all three are present. Trust its agent-teams row; ignore its pipeline
+  rows.
+
+To take it out: `claude plugin uninstall deep-research@claude-community --scope
+project`, which edits the same file.
 
 ---
 
@@ -223,6 +294,7 @@ Everything under `.claude/` is committed, so your whole team gets the same setup
 | **Subagent** | `.claude/agents/<name>.md` | A specialist with its own context window and tool list, for work that would otherwise flood the main conversation: `researcher` and `code-reviewer`. |
 | **Rule** | `.claude/rules/<topic>.md` | Instructions that load only when Claude touches files matching the `paths` frontmatter; keeps `AGENTS.md` short. Ships with `writing.md` (any Markdown) and `testing.md` (test files). |
 | **Hook** | `.claude/settings.json` | A shell command at a lifecycle event. Unlike an instruction, a hook runs whether or not the agent decides to. |
+| **Plugin** | `.claude/settings.json` | Someone else's skills, subagents and hooks, versioned and installed in one step: `claude plugin install <name> --scope project`. Ships with `deep-research`. |
 
 Custom slash commands and skills are the same thing now, so this template uses
 `.claude/skills/` throughout. A legacy `.claude/commands/*.md` file still works if
